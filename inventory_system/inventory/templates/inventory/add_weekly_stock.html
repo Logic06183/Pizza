@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Weekly Stock</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Weekly Stock</h1>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>New Delivery</th>
+                    <th>Closing Stock</th>
+                    <th>Order Required (Y/N)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pizza Box</td>
+                    <td>{{ form.pizza_box_new_delivery }}</td>
+                    <td>{{ form.pizza_box_closing_stock }}</td>
+                    <td>{{ form.pizza_box_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Cooking Oil</td>
+                    <td>{{ form.cooking_oil_new_delivery }}</td>
+                    <td>{{ form.cooking_oil_closing_stock }}</td>
+                    <td>{{ form.cooking_oil_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Salt</td>
+                    <td>{{ form.salt_new_delivery }}</td>
+                    <td>{{ form.salt_closing_stock }}</td>
+                    <td>{{ form.salt_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Sugar</td>
+                    <td>{{ form.sugar_new_delivery }}</td>
+                    <td>{{ form.sugar_closing_stock }}</td>
+                    <td>{{ form.sugar_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Dishwashing Liquid</td>
+                    <td>{{ form.dishwashing_liquid_new_delivery }}</td>
+                    <td>{{ form.dishwashing_liquid_closing_stock }}</td>
+                    <td>{{ form.dishwashing_liquid_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Bleach</td>
+                    <td>{{ form.bleach_new_delivery }}</td>
+                    <td>{{ form.bleach_closing_stock }}</td>
+                    <td>{{ form.bleach_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Pine Gel</td>
+                    <td>{{ form.pine_gel_new_delivery }}</td>
+                    <td>{{ form.pine_gel_closing_stock }}</td>
+                    <td>{{ form.pine_gel_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Black Bags</td>
+                    <td>{{ form.black_bags_new_delivery }}</td>
+                    <td>{{ form.black_bags_closing_stock }}</td>
+                    <td>{{ form.black_bags_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Hand-soap</td>
+                    <td>{{ form.hand_soap_new_delivery }}</td>
+                    <td>{{ form.hand_soap_closing_stock }}</td>
+                    <td>{{ form.hand_soap_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Apron Washing Powder</td>
+                    <td>{{ form.apron_washing_powder_new_delivery }}</td>
+                    <td>{{ form.apron_washing_powder_closing_stock }}</td>
+                    <td>{{ form.apron_washing_powder_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Coke 0</td>
+                    <td>{{ form.coke_zero_new_delivery }}</td>
+                    <td>{{ form.coke_zero_closing_stock }}</td>
+                    <td>{{ form.coke_zero_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Coke</td>
+                    <td>{{ form.coke_new_delivery }}</td>
+                    <td>{{ form.coke_closing_stock }}</td>
+                    <td>{{ form.coke_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Fanta</td>
+                    <td>{{ form.fanta_new_delivery }}</td>
+                    <td>{{ form.fanta_closing_stock }}</td>
+                    <td>{{ form.fanta_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Iced Tea Peach</td>
+                    <td>{{ form.iced_tea_peach_new_delivery }}</td>
+                    <td>{{ form.iced_tea_peach_closing_stock }}</td>
+                    <td>{{ form.iced_tea_peach_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Iced Tea Lemon</td>
+                    <td>{{ form.iced_tea_lemon_new_delivery }}</td>
+                    <td>{{ form.iced_tea_lemon_closing_stock }}</td>
+                    <td>{{ form.iced_tea_lemon_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Still Water</td>
+                    <td>{{ form.still_water_new_delivery }}</td>
+                    <td>{{ form.still_water_closing_stock }}</td>
+                    <td>{{ form.still_water_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Sparkling Water</td>
+                    <td>{{ form.sparkling_water_new_delivery }}</td>
+                    <td>{{ form.sparkling_water_closing_stock }}</td>
+                    <td>{{ form.sparkling_water_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Sprite</td>
+                    <td>{{ form.sprite_new_delivery }}</td>
+                    <td>{{ form.sprite_closing_stock }}</td>
+                    <td>{{ form.sprite_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Heineken 0%</td>
+                    <td>{{ form.heineken_zero_new_delivery }}</td>
+                    <td>{{ form.heineken_zero_closing_stock }}</td>
+                    <td>{{ form.heineken_zero_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Savanna 0%</td>
+                    <td>{{ form.savanna_zero_new_delivery }}</td>
+                    <td>{{ form.savanna_zero_closing_stock }}</td>
+                    <td>{{ form.savanna_zero_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Flour (White)</td>
+                    <td>{{ form.flour_white_new_delivery }}</td>
+                    <td>{{ form.flour_white_closing_stock }}</td>
+                    <td>{{ form.flour_white_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Paper Towel (Roller)</td>
+                    <td>{{ form.paper_towel_new_delivery }}</td>
+                    <td>{{ form.paper_towel_closing_stock }}</td>
+                    <td>{{ form.paper_towel_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Serviette</td>
+                    <td>{{ form.serviette_new_delivery }}</td>
+                    <td>{{ form.serviette_closing_stock }}</td>
+                    <td>{{ form.serviette_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Straws</td>
+                    <td>{{ form.straws_new_delivery }}</td>
+                    <td>{{ form.straws_closing_stock }}</td>
+                    <td>{{ form.straws_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Foil</td>
+                    <td>{{ form.foil_new_delivery }}</td>
+                    <td>{{ form.foil_closing_stock }}</td>
+                    <td>{{ form.foil_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Clingwrap</td>
+                    <td>{{ form.clingwrap_new_delivery }}</td>
+                    <td>{{ form.clingwrap_closing_stock }}</td>
+                    <td>{{ form.clingwrap_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Chilli</td>
+                    <td>{{ form.chilli_new_delivery }}</td>
+                    <td>{{ form.chilli_closing_stock }}</td>
+                    <td>{{ form.chilli_order_required }}</td>
+                </tr>
+                <tr>
+                    <td>Garlic</td>
+                    <td>{{ form.garlic_new_delivery }}</td>
+                    <td>{{ form.garlic_closing_stock }}</td>
+                    <td>{{ form.garlic_order_required }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Add Stock</button>
+    </form>
+    <a href="{% url 'weekly_stock_list' %}">Back to Stock List</a>
+</body>
+</html>
+
+

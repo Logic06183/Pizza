@@ -1,8 +1,13 @@
-# inventory/forms.py
 from django import forms
-from .models import InventoryItem
+from .models import WeeklyStock, Ingredient
 
-class InventoryItemForm(forms.ModelForm):
+class WeeklyStockForm(forms.ModelForm):
     class Meta:
-        model = InventoryItem
-        fields = ['name', 'description', 'quantity']
+        model = WeeklyStock
+        fields = '__all__'
+
+class IngredientForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = '__all__'
+
