@@ -19,7 +19,9 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('orders/', include('orders.urls')),  # Corrected line
     path('', include('inventory.urls')),
 ]
+
 
 
