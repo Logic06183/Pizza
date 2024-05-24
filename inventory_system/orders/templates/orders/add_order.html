@@ -1,55 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Pizza Order</title>
-    <style>
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-control, .form-check-input {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 10px;
-            box-sizing: border-box;
-        }
-        .form-check-input {
-            width: auto;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        .btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <h1>Add Pizza Order</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.platform.label_tag }}{{ form.platform }}
-        </div>
-        <div class="form-group">
-            {{ form.pizza_type.label_tag }}{{ form.pizza_type }}
-        </div>
-        <div class="form-group">
-            {{ form.extra_toppings.label_tag }}{{ form.extra_toppings }}
-        </div>
-        <div class="form-group">
-            {{ form.preparation_time.label_tag }}{{ form.preparation_time }}
-        </div>
-        <button type="submit" class="btn">Add Order</button>
-    </form>
-    <a href="{% url 'order_list' %}">Back to Order List</a>
-</body>
-</html>
+{% extends "base.html" %}
 
+{% block title %}Add Pizza Order{% endblock %}
 
-
+{% block content %}
+<h1>Add Pizza Order</h1>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.platform.label_tag }}{{ form.platform }}
+    </div>
+    <div class="form-group">
+        {{ form.pizza_type.label_tag }}{{ form.pizza_type }}
+    </div>
+    <div class="form-group">
+        {{ form.extra_toppings.label_tag }}{{ form.extra_toppings }}
+    </div>
+    <div class="form-group">
+        {{ form.preparation_time.label_tag }}{{ form.preparation_time }}
+    </div>
+    <button type="submit" class="btn">Add Order</button>
+</form>
+<a href="{% url 'order_list' %}" class="btn">Back to Order List</a>
+{% endblock %}
