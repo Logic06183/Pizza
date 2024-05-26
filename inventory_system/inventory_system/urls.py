@@ -19,9 +19,11 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('orders/', include('orders.urls')),  # Corrected line
-    path('', include('inventory.urls')),
+    path('inventory/', include('inventory.urls')),  # Ensure this line is correct
+    path('orders/', include('orders.urls')),
+    path('', include('inventory.urls')),  # Home page redirect, if needed
 ]
+
 
 
 

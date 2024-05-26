@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from .models import WeeklyStock, Ingredient
 from .forms import WeeklyStockForm, IngredientForm
+from django.shortcuts import render, redirect
+from .models import DailyStock
+from .forms import DailyStockForm
 
 def weekly_stock_list(request):
     try:
@@ -77,3 +80,17 @@ def add_ingredient(request):
     else:
         form = IngredientForm()
     return render(request, 'inventory/add_ingredient.html', {'form': form})
+
+def add_daily_stock(request):
+    if request.method == 'POST':
+        form = DailyStockForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('daily_stock_list')
+    else:
+        form = DailyStockForm()
+    return render(request, 'inventory/add_daily_stock.html', {'form': form})
+
+def daily_stock_list(request):
+    daily_stocks = DailyStock.objects.all().order_by('-date')
+    return render(request, 'inventory/daily_stock_list.html', {'daily_stocks': daily_stocks})

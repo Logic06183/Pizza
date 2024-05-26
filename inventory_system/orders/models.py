@@ -31,10 +31,10 @@ class PizzaOrder(models.Model):
     ]
     platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES)
     pizza_type = models.JSONField(default=list)  # Updated to list
+    quantities = models.JSONField(default=list)  # Add this field to store quantities
     extra_toppings = models.TextField(blank=True)
     preparation_time = models.IntegerField(help_text="Time in minutes")
     order_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Order on {self.platform} at {self.order_time}"
-

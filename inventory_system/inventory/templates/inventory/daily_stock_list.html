@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Daily Stock List</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Staff Name</th>
+            <th>Ingredient</th>
+            <th>New Delivery</th>
+            <th>Closing Stock</th>
+            <th>Order Required</th>
+            <th>Waste</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in daily_stocks %}
+            <tr>
+                <td>{{ stock.date }}</td>
+                <td>{{ stock.staff_name }}</td>
+                <td>{{ stock.ingredient.name }}</td>
+                <td>{{ stock.new_delivery }}</td>
+                <td>{{ stock.closing_stock }}</td>
+                <td>{{ stock.order_required }}</td>
+                <td>{{ stock.waste }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'add_daily_stock' %}">Add New Daily Stock</a>
+{% endblock %}
+

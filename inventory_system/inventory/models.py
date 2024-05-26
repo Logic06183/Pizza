@@ -91,4 +91,182 @@ class WeeklyStock(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=100)
-    details = models.TextField()    
+    details = models.TextField()
+
+from django.db import models
+
+class DailyStock(models.Model):
+    date = models.DateField()
+    staff_name = models.CharField(max_length=100)
+    
+    # Define fields based on the provided form
+    dough_balls_new_delivery = models.IntegerField(default=0)
+    dough_balls_closing_stock = models.IntegerField(default=0)
+    dough_balls_order_required = models.BooleanField(default=False)
+
+    pizza_sauce_new_delivery = models.IntegerField(default=0)
+    pizza_sauce_closing_stock = models.IntegerField(default=0)
+    pizza_sauce_order_required = models.BooleanField(default=False)
+
+    pizza_sauce_tin_new_delivery = models.IntegerField(default=0)
+    pizza_sauce_tin_closing_stock = models.IntegerField(default=0)
+    pizza_sauce_tin_order_required = models.BooleanField(default=False)
+
+    pesto_sauce_new_delivery = models.IntegerField(default=0)
+    pesto_sauce_closing_stock = models.IntegerField(default=0)
+    pesto_sauce_order_required = models.BooleanField(default=False)
+
+    fresh_mozzarella_new_delivery = models.IntegerField(default=0)
+    fresh_mozzarella_closing_stock = models.IntegerField(default=0)
+    fresh_mozzarella_order_required = models.BooleanField(default=False)
+
+    ricotta_new_delivery = models.IntegerField(default=0)
+    ricotta_closing_stock = models.IntegerField(default=0)
+    ricotta_order_required = models.BooleanField(default=False)
+
+    shredded_cheese_new_delivery = models.IntegerField(default=0)
+    shredded_cheese_closing_stock = models.IntegerField(default=0)
+    shredded_cheese_order_required = models.BooleanField(default=False)
+
+    parmesan_new_delivery = models.IntegerField(default=0)
+    parmesan_closing_stock = models.IntegerField(default=0)
+    parmesan_order_required = models.BooleanField(default=False)
+
+    blue_cheese_new_delivery = models.IntegerField(default=0)
+    blue_cheese_closing_stock = models.IntegerField(default=0)
+    blue_cheese_order_required = models.BooleanField(default=False)
+
+    goat_cheese_new_delivery = models.IntegerField(default=0)
+    goat_cheese_closing_stock = models.IntegerField(default=0)
+    goat_cheese_order_required = models.BooleanField(default=False)
+
+    feta_new_delivery = models.IntegerField(default=0)
+    feta_closing_stock = models.IntegerField(default=0)
+    feta_order_required = models.BooleanField(default=False)
+
+    sundried_tomato_new_delivery = models.IntegerField(default=0)
+    sundried_tomato_closing_stock = models.IntegerField(default=0)
+    sundried_tomato_order_required = models.BooleanField(default=False)
+
+    cooked_potato_new_delivery = models.IntegerField(default=0)
+    cooked_potato_closing_stock = models.IntegerField(default=0)
+    cooked_potato_order_required = models.BooleanField(default=False)
+
+    raw_potato_new_delivery = models.IntegerField(default=0)
+    raw_potato_closing_stock = models.IntegerField(default=0)
+    raw_potato_order_required = models.BooleanField(default=False)
+
+    zucchini_new_delivery = models.IntegerField(default=0)
+    zucchini_closing_stock = models.IntegerField(default=0)
+    zucchini_order_required = models.BooleanField(default=False)
+
+    mushroom_new_delivery = models.IntegerField(default=0)
+    mushroom_closing_stock = models.IntegerField(default=0)
+    mushroom_order_required = models.BooleanField(default=False)
+
+    caramelised_onion_new_delivery = models.IntegerField(default=0)
+    caramelised_onion_closing_stock = models.IntegerField(default=0)
+    caramelised_onion_order_required = models.BooleanField(default=False)
+
+    sunflower_seeds_new_delivery = models.IntegerField(default=0)
+    sunflower_seeds_closing_stock = models.IntegerField(default=0)
+    sunflower_seeds_order_required = models.BooleanField(default=False)
+
+    olives_new_delivery = models.IntegerField(default=0)
+    olives_closing_stock = models.IntegerField(default=0)
+    olives_order_required = models.BooleanField(default=False)
+
+    spring_onion_new_delivery = models.IntegerField(default=0)
+    spring_onion_closing_stock = models.IntegerField(default=0)
+    spring_onion_order_required = models.BooleanField(default=False)
+
+    peppadew_new_delivery = models.IntegerField(default=0)
+    peppadew_closing_stock = models.IntegerField(default=0)
+    peppadew_order_required = models.BooleanField(default=False)
+
+    peppadew_tin_new_delivery = models.IntegerField(default=0)
+    peppadew_tin_closing_stock = models.IntegerField(default=0)
+    peppadew_tin_order_required = models.BooleanField(default=False)
+
+    cooked_pineapple_new_delivery = models.IntegerField(default=0)
+    cooked_pineapple_closing_stock = models.IntegerField(default=0)
+    cooked_pineapple_order_required = models.BooleanField(default=False)
+
+    pineapple_tin_new_delivery = models.IntegerField(default=0)
+    pineapple_tin_closing_stock = models.IntegerField(default=0)
+    pineapple_tin_order_required = models.BooleanField(default=False)
+
+    artichoke_leaves_new_delivery = models.IntegerField(default=0)
+    artichoke_leaves_closing_stock = models.IntegerField(default=0)
+    artichoke_leaves_order_required = models.BooleanField(default=False)
+
+    basil_new_delivery = models.IntegerField(default=0)
+    basil_closing_stock = models.IntegerField(default=0)
+    basil_order_required = models.BooleanField(default=False)
+
+    rocket_new_delivery = models.IntegerField(default=0)
+    rocket_closing_stock = models.IntegerField(default=0)
+    rocket_order_required = models.BooleanField(default=False)
+
+    coriander_new_delivery = models.IntegerField(default=0)
+    coriander_closing_stock = models.IntegerField(default=0)
+    coriander_order_required = models.BooleanField(default=False)
+
+    pepperoni_new_delivery = models.IntegerField(default=0)
+    pepperoni_closing_stock = models.IntegerField(default=0)
+    pepperoni_order_required = models.BooleanField(default=False)
+
+    parma_ham_new_delivery = models.IntegerField(default=0)
+    parma_ham_closing_stock = models.IntegerField(default=0)
+    parma_ham_order_required = models.BooleanField(default=False)
+
+    cooked_bacon_new_delivery = models.IntegerField(default=0)
+    cooked_bacon_closing_stock = models.IntegerField(default=0)
+    cooked_bacon_order_required = models.BooleanField(default=False)
+
+    rare_bacon_new_delivery = models.IntegerField(default=0)
+    rare_bacon_closing_stock = models.IntegerField(default=0)
+    rare_bacon_order_required = models.BooleanField(default=False)
+
+    anchovies_new_delivery = models.IntegerField(default=0)
+    anchovies_closing_stock = models.IntegerField(default=0)
+    anchovies_order_required = models.BooleanField(default=False)
+
+    chorizo_new_delivery = models.IntegerField(default=0)
+    chorizo_closing_stock = models.IntegerField(default=0)
+    chorizo_order_required = models.BooleanField(default=False)
+
+    ham_new_delivery = models.IntegerField(default=0)
+    ham_closing_stock = models.IntegerField(default=0)
+    ham_order_required = models.BooleanField(default=False)
+
+    cooked_chicken_new_delivery = models.IntegerField(default=0)
+    cooked_chicken_closing_stock = models.IntegerField(default=0)
+    cooked_chicken_order_required = models.BooleanField(default=False)
+
+    raw_chicken_new_delivery = models.IntegerField(default=0)
+    raw_chicken_closing_stock = models.IntegerField(default=0)
+    raw_chicken_order_required = models.BooleanField(default=False)
+
+    chilli_oil_new_delivery = models.IntegerField(default=0)
+    chilli_oil_closing_stock = models.IntegerField(default=0)
+    chilli_oil_order_required = models.BooleanField(default=False)
+
+    truffle_oil_new_delivery = models.IntegerField(default=0)
+    truffle_oil_closing_stock = models.IntegerField(default=0)
+    truffle_oil_order_required = models.BooleanField(default=False)
+
+    hummus_new_delivery = models.IntegerField(default=0)
+    hummus_closing_stock = models.IntegerField(default=0)
+    hummus_order_required = models.BooleanField(default=False)
+
+    fig_jam_new_delivery = models.IntegerField(default=0)
+    fig_jam_closing_stock = models.IntegerField(default=0)
+    fig_jam_order_required = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Daily Stock on {self.date} by {self.staff_name}"
+
+
+    def __str__(self):
+        return f"{self.item_name} - {self.date}"
