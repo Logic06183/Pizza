@@ -1,64 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Weekly Stock List</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .yes {
-            background-color: red;
-            color: white;
-        }
-        .no {
-            background-color: green;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <h1>Weekly Stock List</h1>
-    {% if stock %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Staff Name</th>
-                    <th>Item</th>
-                    <th>New Delivery</th>
-                    <th>Closing Stock</th>
-                    <th>Order Required (Y/N)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td rowspan="{{ stock.items|length }}">{{ stock.date }}</td>
-                    <td rowspan="{{ stock.items|length }}">{{ stock.staff_name }}</td>
-                    {% for item in stock.items %}
-                        {% if not forloop.first %}
-                        </tr><tr>
-                        {% endif %}
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.new_delivery }}</td>
-                        <td>{{ item.closing_stock }}</td>
-                        <td class="{% if item.order_required %}yes{% else %}no{% endif %}">
-                            {{ item.order_required|yesno:"Yes,No" }}
-                        </td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    {% else %}
-        <p>No stock entries available.</p>
-    {% endif %}
-    <a href="{% url 'add_weekly_stock' %}">Add Weekly Stock</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Weekly Stock List</h1>
+{% if stock %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Staff Name</th>
+                <th>Item</th>
+                <th>New Delivery</th>
+                <th>Closing Stock</th>
+                <th>Order Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in stock.items %}
+            <tr>
+                <td>{{ stock.date }}</td>
+                <td>{{ stock.staff_name }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.new_delivery }}</td>
+                <td>{{ item.closing_stock }}</td>
+                <td>{{ item.order_required }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No stock entries available.</p>
+{% endif %}
+<a href="{% url 'add_weekly_stock' %}">Add Weekly Stock</a> |
+<a href="{% url 'daily_stock_list' %}">View Daily Stocks</a>
+{% endblock %}

@@ -1,12 +1,63 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>Add Daily Stock</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Stock</button>
-</form>
-<a href="{% url 'daily_stock_list' %}">Back to Daily Stock List</a>
+    <h2>Add Daily Stock</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label for="staff_name">Staff name:</label>
+                        <input type="text" id="staff_name" name="staff_name" placeholder="Enter staff name">
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="3"><h3>Ingredients</h3></td>
+            </tr>
+            <tr>
+                <th>Ingredient</th>
+                <th>New Delivery</th>
+                <th>Closing Stock</th>
+                <th>Order Required</th>
+            </tr>
+            <tr>
+                <td>Dough Balls</td>
+                <td>
+                    <input type="number" id="dough_balls_new_delivery" name="dough_balls_new_delivery" value="0">
+                </td>
+                <td>
+                    <input type="number" id="dough_balls_closing_stock" name="dough_balls_closing_stock" value="0">
+                </td>
+                <td>
+                    <input type="checkbox" id="dough_balls_order_required" name="dough_balls_order_required">
+                </td>
+            </tr>
+            <tr>
+                <td>Pizza Sauce</td>
+                <td>
+                    <input type="number" id="pizza_sauce_new_delivery" name="pizza_sauce_new_delivery" value="0">
+                </td>
+                <td>
+                    <input type="number" id="pizza_sauce_closing_stock" name="pizza_sauce_closing_stock" value="0">
+                </td>
+                <td>
+                    <input type="checkbox" id="pizza_sauce_order_required" name="pizza_sauce_order_required">
+                </td>
+            </tr>
+            <!-- Add similar rows for other ingredients -->
+        </table>
+        <button type="submit" class="btn">Submit</button>
+    </form>
 {% endblock %}
+
+
 
