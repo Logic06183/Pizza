@@ -1,33 +1,108 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>Daily Stock List</h1>
-<table border="1">
-    <thead>
+    <h2>Daily Stock List</h2>
+    <table>
         <tr>
             <th>Date</th>
             <th>Staff Name</th>
-            <th>Ingredient</th>
-            <th>New Delivery</th>
-            <th>Closing Stock</th>
-            <th>Order Required</th>
-            <th>Waste</th>
+            <th>Dough Balls</th>
+            <th>Pizza Sauce</th>
+            <th>Pizza Sauce Tin</th>
+            <th>Pesto Sauce</th>
+            <th>Fresh Mozzarella</th>
+            <th>Ricotta</th>
+            <th>Shredded Cheese</th>
+            <th>Parmesan</th>
+            <th>Blue Cheese</th>
+            <th>Goat Cheese</th>
+            <th>Feta</th>
+            <th>Sundried Tomato</th>
+            <th>Cooked Potato</th>
+            <th>Raw Potato</th>
+            <th>Zucchini</th>
+            <th>Mushroom</th>
+            <th>Caramelised Onion</th>
+            <th>Sunflower Seeds</th>
+            <th>Olives</th>
+            <th>Spring Onion</th>
+            <th>Peppadew</th>
+            <th>Peppadew Tin</th>
+            <th>Cooked Pineapple</th>
+            <th>Pineapple Tin</th>
+            <th>Artichoke Leaves</th>
+            <th>Basil</th>
+            <th>Rocket</th>
+            <th>Coriander</th>
+            <th>Pepperoni</th>
+            <th>Parma Ham</th>
+            <th>Cooked Bacon</th>
+            <th>Rare Bacon</th>
+            <th>Anchovies</th>
+            <th>Chorizo</th>
+            <th>Ham</th>
+            <th>Cooked Chicken</th>
+            <th>Raw Chicken</th>
+            <th>Chilli Oil</th>
+            <th>Truffle Oil</th>
+            <th>Hummus</th>
+            <th>Fig Jam</th>
+            <th>Actions</th>
         </tr>
-    </thead>
-    <tbody>
         {% for stock in daily_stocks %}
-            <tr>
-                <td>{{ stock.date }}</td>
-                <td>{{ stock.staff_name }}</td>
-                <td>{{ stock.ingredient.name }}</td>
-                <td>{{ stock.new_delivery }}</td>
-                <td>{{ stock.closing_stock }}</td>
-                <td>{{ stock.order_required }}</td>
-                <td>{{ stock.waste }}</td>
-            </tr>
+        <tr>
+            <td>{{ stock.date }}</td>
+            <td>{{ stock.staff_name }}</td>
+            <td>{{ stock.dough_balls_closing_stock }}</td>
+            <td>{{ stock.pizza_sauce_closing_stock }}</td>
+            <td>{{ stock.pizza_sauce_tin_closing_stock }}</td>
+            <td>{{ stock.pesto_sauce_closing_stock }}</td>
+            <td>{{ stock.fresh_mozzarella_closing_stock }}</td>
+            <td>{{ stock.ricotta_closing_stock }}</td>
+            <td>{{ stock.shredded_cheese_closing_stock }}</td>
+            <td>{{ stock.parmesan_closing_stock }}</td>
+            <td>{{ stock.blue_cheese_closing_stock }}</td>
+            <td>{{ stock.goat_cheese_closing_stock }}</td>
+            <td>{{ stock.feta_closing_stock }}</td>
+            <td>{{ stock.sundried_tomato_closing_stock }}</td>
+            <td>{{ stock.cooked_potato_closing_stock }}</td>
+            <td>{{ stock.raw_potato_closing_stock }}</td>
+            <td>{{ stock.zucchini_closing_stock }}</td>
+            <td>{{ stock.mushroom_closing_stock }}</td>
+            <td>{{ stock.caramelised_onion_closing_stock }}</td>
+            <td>{{ stock.sunflower_seeds_closing_stock }}</td>
+            <td>{{ stock.olives_closing_stock }}</td>
+            <td>{{ stock.spring_onion_closing_stock }}</td>
+            <td>{{ stock.peppadew_closing_stock }}</td>
+            <td>{{ stock.peppadew_tin_closing_stock }}</td>
+            <td>{{ stock.cooked_pineapple_closing_stock }}</td>
+            <td>{{ stock.pineapple_tin_closing_stock }}</td>
+            <td>{{ stock.artichoke_leaves_closing_stock }}</td>
+            <td>{{ stock.basil_closing_stock }}</td>
+            <td>{{ stock.rocket_closing_stock }}</td>
+            <td>{{ stock.coriander_closing_stock }}</td>
+            <td>{{ stock.pepperoni_closing_stock }}</td>
+            <td>{{ stock.parma_ham_closing_stock }}</td>
+            <td>{{ stock.cooked_bacon_closing_stock }}</td>
+            <td>{{ stock.rare_bacon_closing_stock }}</td>
+            <td>{{ stock.anchovies_closing_stock }}</td>
+            <td>{{ stock.chorizo_closing_stock }}</td>
+            <td>{{ stock.ham_closing_stock }}</td>
+            <td>{{ stock.cooked_chicken_closing_stock }}</td>
+            <td>{{ stock.raw_chicken_closing_stock }}</td>
+            <td>{{ stock.chilli_oil_closing_stock }}</td>
+            <td>{{ stock.truffle_oil_closing_stock }}</td>
+            <td>{{ stock.hummus_closing_stock }}</td>
+            <td>{{ stock.fig_jam_closing_stock }}</td>
+            <td>
+                <a href="{% url 'edit_daily_stock' stock.id %}">Edit</a> | 
+                <a href="{% url 'delete_daily_stock' stock.id %}">Delete</a>
+            </td>
+        </tr>
         {% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'add_daily_stock' %}">Add New Daily Stock</a>
+    </table>
+    <a href="{% url 'add_daily_stock' %}" class="btn">Add Daily Stock</a>
 {% endblock %}
+
+
 

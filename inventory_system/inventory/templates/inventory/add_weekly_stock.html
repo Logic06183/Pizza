@@ -1,40 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Weekly Stock</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        td label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        form {
-            margin-top: 20px;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
     <h1>Add Weekly Stock</h1>
     <form method="post">
         {% csrf_token %}
@@ -221,7 +187,38 @@
         <button type="submit">Add Stock</button>
     </form>
     <a href="{% url 'weekly_stock_list' %}">Back to Stock List</a>
-</body>
-</html>
+{% endblock %}
 
-
+{% block styles %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    td label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    form {
+        margin-top: 20px;
+    }
+    button {
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}
