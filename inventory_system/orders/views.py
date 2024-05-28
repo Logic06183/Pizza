@@ -3,6 +3,7 @@ from .models import PizzaOrder
 from .forms import PizzaOrderForm
 from datetime import datetime, timedelta
 import pytz
+from inventory.models import Ingredient
 
 def add_order(request):
     if request.method == 'POST':
@@ -28,3 +29,28 @@ def order_list(request):
         order_list.append((order, due_time))
     order_list.sort(key=lambda x: x[1])  # Sort by due_time
     return render(request, 'orders/order_list.html', {'orders': order_list})
+
+def daily_report(request):
+    # Calculate the estimated usage of ingredients for the current day
+    orders = PizzaOrder.objects.filter(order_time__date=datetime.today().date())
+    total_usage = {}
+    for order in orders:
+        usage = order.calculate_ingredient_usage()
+        for ingredient, quantity in usage.items():
+            if ingredient not in total_usage:
+                total_usage[ingredient] = 0
+            total_usage[ingredient] += quantity
+
+    # Calculate remaining stock based on current inventory
+    ingredients = Ingredient.objects.all()
+    report = []
+    for ingredient in ingredients:
+        remaining_quantity = ingredient.quantity - total_usage.get(ingredient.name, 0)
+        report.append({
+            'name': ingredient.name,
+            'current_stock': ingredient.quantity,
+            'estimated_usage': total_usage.get(ingredient.name, 0),
+            'estimated_remaining': remaining_quantity,
+        })
+
+    return render(request, 'orders/daily_report.html', {'report': report})

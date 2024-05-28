@@ -88,11 +88,6 @@ class WeeklyStock(models.Model):
     garlic_closing_stock = models.IntegerField(default=0)
     garlic_order_required = models.BooleanField(default=False)
 
-class Ingredient(models.Model):
-    name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100)
-    details = models.TextField()
-
 from django.db import models
 
 class DailyStock(models.Model):
@@ -270,3 +265,31 @@ class DailyStock(models.Model):
 
     def __str__(self):
         return f"{self.item_name} - {self.date}"
+    
+
+from django.db import models
+
+class Ingredient(models.Model):
+    name = models.CharField(max_length=100)
+    quantity = models.IntegerField(default=0)  # Actual stock quantity
+
+    def __str__(self):
+        return self.name
+
+class Pizza(models.Model):
+    name = models.CharField(max_length=100)
+    ingredients = models.ManyToManyField(Ingredient, through='PizzaIngredient')
+
+    def __str__(self):
+        return self.name
+
+class PizzaIngredient(models.Model):
+    pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    quantity_needed = models.FloatField(default=0)  # Quantity needed for this pizza (in grams, for example)
+
+    def __str__(self):
+        return f"{self.quantity_needed}g of {self.ingredient.name} for {self.pizza.name}"
+
+
+

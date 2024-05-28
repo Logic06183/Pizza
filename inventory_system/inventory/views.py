@@ -94,3 +94,42 @@ def add_daily_stock(request):
 def daily_stock_list(request):
     daily_stocks = DailyStock.objects.all().order_by('-date')
     return render(request, 'inventory/daily_stock_list.html', {'daily_stocks': daily_stocks})
+
+
+from django.shortcuts import render
+from .models import WeeklyStock, Ingredient
+from datetime import datetime, timedelta
+import pytz
+
+def weekly_stock_report(request):
+    today = datetime.now(pytz.timezone('Africa/Johannesburg')).date()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+
+    weekly_stocks = WeeklyStock.objects.filter(date__range=[start_of_week, end_of_week])
+    total_usage = {}
+
+    for stock in weekly_stocks:
+        for field in stock._meta.get_fields():
+            if isinstance(field, models.IntegerField) and field.name.endswith('_new_delivery'):
+                ingredient_name = field.name.replace('_new_delivery', '')
+                usage_field = f"{ingredient_name}_closing_stock"
+                if ingredient_name not in total_usage:
+                    total_usage[ingredient_name] = {'new_delivery': 0, 'closing_stock': 0}
+                total_usage[ingredient_name]['new_delivery'] += getattr(stock, field.name)
+                total_usage[ingredient_name]['closing_stock'] += getattr(stock, usage_field)
+
+    report = []
+    for ingredient, data in total_usage.items():
+        initial_stock = data['new_delivery'] - data['closing_stock']
+        usage = initial_stock - data['closing_stock']
+        report.append({
+            'name': ingredient.replace('_', ' ').title(),
+            'initial_stock': initial_stock,
+            'new_delivery': data['new_delivery'],
+            'closing_stock': data['closing_stock'],
+            'usage': usage
+        })
+
+    return render(request, 'inventory/weekly_stock_report.html', {'report': report})
+
