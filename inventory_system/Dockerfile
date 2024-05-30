@@ -13,9 +13,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the project files
 COPY . .
 
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
 # Expose the port the app runs on
 EXPOSE 8000
 
 # Define the command to run the application
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "inventory_system.wsgi:application"]
+
+
 
