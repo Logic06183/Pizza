@@ -88,3 +88,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+CSRF_TRUSTED_ORIGINS = ['https://pizza-app-vad7im2bsq-uc.a.run.app']
+
