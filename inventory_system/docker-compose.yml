@@ -1,28 +1,25 @@
-version: '3.8'
+version: '3'
 
 services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: pizza
+      POSTGRES_USER: CParker
+      POSTGRES_PASSWORD: P@ssw0rd!Secure123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   web:
     build: .
-    command: gunicorn inventory_system.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn inventory_system.wsgi:application --bind 0.0.0.0:8080
+    environment:
+      DEBUG: 'True'
     volumes:
       - .:/app
-      - static_volume:/app/staticfiles
     ports:
       - "8000:8000"
-    env_file:
-      - .env
     depends_on:
       - db
 
-  db:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      POSTGRES_DB: inventory_system_db
-      POSTGRES_USER: inventory_user
-      POSTGRES_PASSWORD: securepassword
-
 volumes:
   postgres_data:
-  static_volume:
