@@ -1,3 +1,5 @@
+# orders/views.py
+
 from django.shortcuts import render, redirect
 from .models import PizzaOrder
 from .forms import PizzaOrderForm
@@ -19,7 +21,7 @@ def add_order(request):
     return render(request, 'orders/add_order.html', {'form': form})
 
 def order_list(request):
-    orders = PizzaOrder.objects.all()
+    orders = PizzaOrder.objects.filter(display=True)
     current_time = datetime.now(pytz.timezone('Africa/Johannesburg'))  # Use timezone-aware datetime
     order_list = []
     for order in orders:

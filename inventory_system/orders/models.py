@@ -1,4 +1,5 @@
 # orders/models.py
+
 from django.db import models
 
 class Ingredient(models.Model):
@@ -50,6 +51,7 @@ class PizzaOrder(models.Model):
     extra_toppings = models.TextField(blank=True)
     preparation_time = models.IntegerField(help_text="Time in minutes")
     order_time = models.DateTimeField(auto_now_add=True)
+    display = models.BooleanField(default=True)  # Field to control display of the order
 
     def __str__(self):
         return f"Order on {self.platform} at {self.order_time}"
