@@ -1,8 +1,10 @@
+# orders/views.py
+
 from django.shortcuts import render, redirect
 from inventory.models import Ingredient
-from .models import PizzaOrder, Pizza, PizzaOrderItem
+from .models import PizzaOrder, PizzaOrderItem, Pizza
 from .forms import PizzaOrderForm
-from datetime import datetime, timedelta  # Make sure timedelta is imported here
+from datetime import datetime, timedelta
 import pytz
 from django.utils import timezone
 
@@ -11,20 +13,21 @@ def add_order(request):
     if request.method == 'POST':
         form = PizzaOrderForm(request.POST)
         if form.is_valid():
-            pizza_order = form.save(commit=False)
-            pizza_order.save()
+            pizza_order = form.save()
 
             # Save the pizza quantities
-            for pizza in form.cleaned_data['pizza_type']:
+            for pizza in pizzas:
                 quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
                 if quantity > 0:
                     PizzaOrderItem.objects.create(order=pizza_order, pizza_type=pizza, quantity=quantity)
-                    
+
             return redirect('order_list')
     else:
         form = PizzaOrderForm()
 
     return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
+
+
 
 def order_list(request):
     today = timezone.now().date()
