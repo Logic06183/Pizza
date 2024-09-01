@@ -2,22 +2,20 @@ from django.shortcuts import render, redirect
 from inventory.models import Ingredient
 from .models import PizzaOrder, Pizza, PizzaOrderItem
 from .forms import PizzaOrderForm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta  # Make sure timedelta is imported here
 import pytz
+from django.utils import timezone
 
 def add_order(request):
-    pizzas = Pizza.objects.all()
-    quantity_fields = []
-    other_fields = []
-
+    pizzas = Pizza.objects.all()  # Fetch all pizzas to display in the form
     if request.method == 'POST':
         form = PizzaOrderForm(request.POST)
         if form.is_valid():
             pizza_order = form.save(commit=False)
             pizza_order.save()
-            
+
             # Save the pizza quantities
-            for pizza in pizzas:
+            for pizza in form.cleaned_data['pizza_type']:
                 quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
                 if quantity > 0:
                     PizzaOrderItem.objects.create(order=pizza_order, pizza_type=pizza, quantity=quantity)
@@ -26,32 +24,23 @@ def add_order(request):
     else:
         form = PizzaOrderForm()
 
-    # Separate quantity fields and other fields
-    for field in form:
-        if field.name.startswith("quantity_"):
-            quantity_fields.append(field)
-        else:
-            other_fields.append(field)
-
-    return render(request, 'orders/add_order.html', {
-        'form': form,
-        'pizzas': pizzas,
-        'quantity_fields': quantity_fields,
-        'other_fields': other_fields,
-    })
-
-
+    return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
 
 def order_list(request):
-    orders = PizzaOrder.objects.filter(display=True)
-    current_time = datetime.now(pytz.timezone('Africa/Johannesburg'))  # Use timezone-aware datetime
+    today = timezone.now().date()
+    orders = PizzaOrder.objects.filter(order_time__date=today, display=True)
+    current_time = timezone.now()
+
     order_list = []
     for order in orders:
-        due_time = order.order_time + timedelta(minutes=order.preparation_time)
+        due_time = order.order_time + timedelta(minutes=order.preparation_time)  # timedelta used here
         order.is_late = current_time > due_time
         order.is_high_priority = current_time + timedelta(minutes=5) > due_time and not order.is_late
-        order_list.append((order, due_time))
-    order_list.sort(key=lambda x: x[1])  # Sort by due_time
+        pizza_types = [item.pizza_type.name for item in order.pizzaorderitem_set.all()]
+        quantities = [item.quantity for item in order.pizzaorderitem_set.all()]
+        order_list.append((order, due_time, pizza_types, quantities))
+
+    order_list.sort(key=lambda x: x[1])
     return render(request, 'orders/order_list.html', {'orders': order_list})
 
 def daily_report(request):

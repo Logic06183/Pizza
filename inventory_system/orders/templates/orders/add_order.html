@@ -6,23 +6,28 @@
     <h1>Add Pizza Order</h1>
     <form method="post">
         {% csrf_token %}
+        <div class="form-group">
+            <label for="platform">Platform:</label>
+            {{ form.platform }}
+        </div>
 
-        {% for field in other_fields %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-            </div>
-        {% endfor %}
+        <div class="form-group">
+            <label for="pizza_type">Pizza Type:</label>
+            {{ form.pizza_type }}
+        </div>
 
-        <h3>Enter Quantities for Selected Pizzas:</h3>
-        {% for field in quantity_fields %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-            </div>
-        {% endfor %}
+        <div class="form-group">
+            <label for="extra_toppings">Extra Toppings:</label>
+            {{ form.extra_toppings }}
+        </div>
+
+        <div class="form-group">
+            <label for="preparation_time">Preparation Time (minutes):</label>
+            {{ form.preparation_time }}
+        </div>
 
         <button type="submit" class="btn">Add Order</button>
     </form>
     <a href="{% url 'order_list' %}">Back to Order List</a>
 {% endblock %}
+

@@ -8,7 +8,7 @@
         <thead>
             <tr>
                 <th>Platform</th>
-                <th>Pizza Type</th>
+                <th>Pizza Types</th>
                 <th>Quantities</th>
                 <th>Extra Toppings</th>
                 <th>Preparation Time</th>
@@ -17,11 +17,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for order, due_time in orders %}
+            {% for order, due_time, pizza_types, quantities in orders %}
                 <tr class="{% if order.is_late %}late{% elif order.is_high_priority %}high-priority{% endif %}">
                     <td>{{ order.platform }}</td>
-                    <td>{{ order.pizza_type|join:", " }}</td>
-                    <td>{{ order.quantities|join:", " }}</td>
+                    <td>{{ pizza_types|join:", " }}</td>
+                    <td>{{ quantities|join:", " }}</td>
                     <td>{{ order.extra_toppings }}</td>
                     <td>{{ order.preparation_time }} min</td>
                     <td>{{ order.order_time|time:"P" }}</td>

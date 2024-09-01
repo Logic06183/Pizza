@@ -27,11 +27,29 @@ class PizzaOrder(models.Model):
         ('Window', 'Window'),
         ('Other', 'Other'),
     ]
-    platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES)
-    extra_toppings = models.TextField(blank=True)
-    preparation_time = models.IntegerField(help_text="Time in minutes")
-    order_time = models.DateTimeField(auto_now_add=True)
-    display = models.BooleanField(default=True)  # Field to control display of the order
+    platform = models.CharField(
+        max_length=50, 
+        choices=PLATFORM_CHOICES,
+        verbose_name="Delivery Platform",
+        help_text="Platform used for ordering"
+    )
+    extra_toppings = models.TextField(
+        blank=True,
+        verbose_name="Extra Toppings",
+        help_text="Any extra toppings requested by the customer"
+    )
+    preparation_time = models.IntegerField(
+        help_text="Time in minutes for preparation"
+    )
+    order_time = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
+    display = models.BooleanField(
+        default=True,
+        verbose_name="Display Order",
+        help_text="Toggle whether the order should be visible on the order list"
+    )
 
     def __str__(self):
         return f"Order on {self.platform} at {self.order_time}"
@@ -54,6 +72,9 @@ class PizzaOrderItem(models.Model):
     order = models.ForeignKey(PizzaOrder, on_delete=models.CASCADE)
     pizza_type = models.ForeignKey(Pizza, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['pizza_type']
 
     def __str__(self):
         return f"{self.quantity} x {self.pizza_type.name} for order {self.order_id}"
