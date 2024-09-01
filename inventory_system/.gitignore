@@ -15,16 +15,65 @@ env/
 .venv/
 .env/
 
-# Ignore macOS specific files
+# Ignore MacOS system files
 .DS_Store
 
-# Ignore Docker files
-docker-compose.yml
-*.dockerfile
+# Ignore Python bytecode
+*.pyc
+__pycache__/
+
+# Ignore virtual environment
+env/
+venv/
+*.env
+
+# Ignore Django migrations
+*/migrations/*
+!*/migrations/__init__.py
 
 # Ignore logs
 *.log
 logs/
 
-# Ignore static files
+# Ignore static and media files
 staticfiles/
+media/
+
+# Ignore local SQLite database
+db.sqlite3
+
+# Ignore Docker-related files
+docker-compose.yml
+*.dockerfile
+*.env
+.env.*
+*.envrc
+
+# Ignore Docker volumes
+volumes/
+tmp/
+**/docker-entrypoint-initdb.d/
+
+# Ignore node_modules (if you use Node.js or frontend tools)
+node_modules/
+
+# Ignore coverage and testing reports
+coverage/
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Ignore IDE and editor settings
+.idea/
+.vscode/
+*.swp
+
+# Ignore other miscellaneous files
+*.bak
+*.tmp
+*.old
+*.orig
+
