@@ -1,24 +1,46 @@
-# orders/views.py
-
 from django.shortcuts import render, redirect
-from .models import PizzaOrder
+from inventory.models import Ingredient
+from .models import PizzaOrder, Pizza, PizzaOrderItem
 from .forms import PizzaOrderForm
 from datetime import datetime, timedelta
 import pytz
-from inventory.models import Ingredient
 
 def add_order(request):
+    pizzas = Pizza.objects.all()
+    quantity_fields = []
+    other_fields = []
+
     if request.method == 'POST':
         form = PizzaOrderForm(request.POST)
         if form.is_valid():
             pizza_order = form.save(commit=False)
-            pizza_order.pizza_type = form.cleaned_data['pizza_type']
-            pizza_order.quantities = form.cleaned_data['quantities']
             pizza_order.save()
+            
+            # Save the pizza quantities
+            for pizza in pizzas:
+                quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
+                if quantity > 0:
+                    PizzaOrderItem.objects.create(order=pizza_order, pizza_type=pizza, quantity=quantity)
+                    
             return redirect('order_list')
     else:
         form = PizzaOrderForm()
-    return render(request, 'orders/add_order.html', {'form': form})
+
+    # Separate quantity fields and other fields
+    for field in form:
+        if field.name.startswith("quantity_"):
+            quantity_fields.append(field)
+        else:
+            other_fields.append(field)
+
+    return render(request, 'orders/add_order.html', {
+        'form': form,
+        'pizzas': pizzas,
+        'quantity_fields': quantity_fields,
+        'other_fields': other_fields,
+    })
+
+
 
 def order_list(request):
     orders = PizzaOrder.objects.filter(display=True)

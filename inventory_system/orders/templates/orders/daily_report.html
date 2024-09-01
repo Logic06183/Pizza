@@ -2,25 +2,19 @@
 
 {% block content %}
 <h2>Daily Stock Report</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Ingredient</th>
-            <th>Current Stock</th>
-            <th>Estimated Usage</th>
-            <th>Estimated Remaining</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in report %}
-        <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.current_stock }}</td>
-            <td>{{ item.estimated_usage }}</td>
-            <td>{{ item.estimated_remaining }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% include 'inventory/report_table.html' %}
 {% endblock %}
 
+{% block table_headers %}
+    <th>Ingredient</th>
+    <th>Current Stock</th>
+    <th>Estimated Usage</th>
+    <th>Estimated Remaining</th>
+{% endblock %}
+
+{% block table_rows %}
+    <td>{{ item.name }}</td>
+    <td>{{ item.current_stock }}</td>
+    <td>{{ item.estimated_usage }}</td>
+    <td>{{ item.estimated_remaining }}</td>
+{% endblock %}

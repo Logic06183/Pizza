@@ -1,0 +1,14 @@
+<table>
+    <thead>
+        <tr>
+            {% block table_headers %}{% endblock %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in report %}
+        <tr>
+            {% block table_rows %}{% endblock %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

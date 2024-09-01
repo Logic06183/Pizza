@@ -143,4 +143,7 @@ def weekly_stock_report(request):
 
     return render(request, 'inventory/weekly_stock_report.html', {'report': report})
 
+def ingredient_list(request):
+    ingredients = Ingredient.objects.all()
+    return render(request, 'inventory/ingredient_list.html', {'ingredients': ingredients})
 
