@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Add Daily Stock</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h3>Stock Items</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>New Delivery</th>
+                <th>Closing Stock</th>
+                <th>Order Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in stock_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td><input type="number" name="new_delivery_{{ item.id }}" min="0"></td>
+                <td><input type="number" name="closing_stock_{{ item.id }}" min="0"></td>
+                <td><input type="checkbox" name="order_required_{{ item.id }}"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

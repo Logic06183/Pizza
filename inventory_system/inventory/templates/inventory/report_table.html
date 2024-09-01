@@ -1,14 +1,14 @@
-<table>
+<table class="table">
     <thead>
         <tr>
-            {% block table_headers %}{% endblock %}
+            {% block table_headers %}
+            <!-- Custom table headers will go here -->
+            {% endblock %}
         </tr>
     </thead>
     <tbody>
-        {% for item in report %}
-        <tr>
-            {% block table_rows %}{% endblock %}
-        </tr>
-        {% endfor %}
+        {% block table_rows %}
+        <!-- Custom table rows will go here -->
+        {% endblock %}
     </tbody>
 </table>

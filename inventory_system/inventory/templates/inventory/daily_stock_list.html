@@ -2,11 +2,11 @@
 
 {% block content %}
 <h2>Daily Stock List</h2>
+
 <table>
     <thead>
         <tr>
             <th>Date</th>
-            <th>Staff Name</th>
             <th>Item</th>
             <th>New Delivery</th>
             <th>Closing Stock</th>
@@ -14,23 +14,15 @@
         </tr>
     </thead>
     <tbody>
-        {% if daily_stocks %}
-            {% for stock in daily_stocks %}
-                <tr>
-                    <td>{{ stock.date }}</td>
-                    <td>{{ stock.staff_name }}</td>
-                    <td>{{ stock.item.name }}</td>
-                    <td>{{ stock.new_delivery }}</td>
-                    <td>{{ stock.closing_stock }}</td>
-                    <td>{{ stock.order_required }}</td>
-                </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="6">No stock entries available.</td>
-            </tr>
-        {% endif %}
+        {% for stock in stocks %}
+        <tr>
+            <td>{{ stock.date }}</td>
+            <td>{{ stock.item.name }}</td>
+            <td>{{ stock.new_delivery }}</td>
+            <td>{{ stock.closing_stock }}</td>
+            <td>{{ stock.order_required }}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'add_daily_stock' %}">Add Daily Stock</a>
 {% endblock %}

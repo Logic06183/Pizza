@@ -1,33 +1,29 @@
-# orders/views.py
-
 from django.shortcuts import render, redirect
+from django.utils import timezone  # Add this import
+from datetime import timedelta  # Make sure timedelta is imported as well
 from inventory.models import Ingredient
-from .models import PizzaOrder, PizzaOrderItem, Pizza
+from .models import PizzaOrder, Pizza, PizzaOrderItem
 from .forms import PizzaOrderForm
-from datetime import datetime, timedelta
-import pytz
-from django.utils import timezone
 
 def add_order(request):
     pizzas = Pizza.objects.all()  # Fetch all pizzas to display in the form
     if request.method == 'POST':
         form = PizzaOrderForm(request.POST)
         if form.is_valid():
-            pizza_order = form.save()
+            pizza_order = form.save(commit=False)
+            pizza_order.save()
 
             # Save the pizza quantities
             for pizza in pizzas:
                 quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
                 if quantity > 0:
                     PizzaOrderItem.objects.create(order=pizza_order, pizza_type=pizza, quantity=quantity)
-
+                    
             return redirect('order_list')
     else:
         form = PizzaOrderForm()
 
     return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
-
-
 
 def order_list(request):
     today = timezone.now().date()
@@ -36,7 +32,7 @@ def order_list(request):
 
     order_list = []
     for order in orders:
-        due_time = order.order_time + timedelta(minutes=order.preparation_time)  # timedelta used here
+        due_time = order.order_time + timedelta(minutes=order.preparation_time)
         order.is_late = current_time > due_time
         order.is_high_priority = current_time + timedelta(minutes=5) > due_time and not order.is_late
         pizza_types = [item.pizza_type.name for item in order.pizzaorderitem_set.all()]
@@ -48,7 +44,7 @@ def order_list(request):
 
 def daily_report(request):
     # Calculate the estimated usage of ingredients for the current day
-    orders = PizzaOrder.objects.filter(order_time__date=datetime.today().date())
+    orders = PizzaOrder.objects.filter(order_time__date=timezone.now().date())
     total_usage = {}
     for order in orders:
         usage = order.calculate_ingredient_usage()

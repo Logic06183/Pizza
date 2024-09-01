@@ -1,10 +1,8 @@
-# orders/admin.py
-
 from django.contrib import admin
-from .models import Pizza, PizzaOrder, PizzaOrderItem
+from .models import Pizza
 
-# Register the Pizza model
-admin.site.register(Pizza)
-admin.site.register(PizzaOrder)
-admin.site.register(PizzaOrderItem)
+@admin.register(Pizza)
+class PizzaAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
 

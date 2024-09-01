@@ -1,35 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Weekly Stock Report</h2>
+<h2>Weekly Stock List</h2>
+
 <table>
     <thead>
         <tr>
-            <th>Ingredient</th>
-            <th>Initial Stock</th>
+            <th>Date</th>
+            <th>Item</th>
             <th>New Delivery</th>
             <th>Closing Stock</th>
-            <th>Usage</th>
+            <th>Order Required</th>
         </tr>
     </thead>
     <tbody>
-        {% if report %}
-            {% for item in report %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.initial_stock }}</td>
-                <td>{{ item.new_delivery }}</td>
-                <td>{{ item.closing_stock }}</td>
-                <td>{{ item.usage }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5">No stock entries available.</td>
-            </tr>
-        {% endif %}
+        {% for stock in stocks %}
+        <tr>
+            <td>{{ stock.date }}</td>
+            <td>{{ stock.item.name }}</td>
+            <td>{{ stock.new_delivery }}</td>
+            <td>{{ stock.closing_stock }}</td>
+            <td>{{ stock.order_required }}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'add_weekly_stock' %}">Add Weekly Stock</a>
 {% endblock %}
-
