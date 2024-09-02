@@ -2,27 +2,9 @@
 
 {% block content %}
 <h2>Daily Stock List</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Item</th>
-            <th>New Delivery</th>
-            <th>Closing Stock</th>
-            <th>Order Required</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for stock in stocks %}
-        <tr>
-            <td>{{ stock.date }}</td>
-            <td>{{ stock.item.name }}</td>
-            <td>{{ stock.new_delivery }}</td>
-            <td>{{ stock.closing_stock }}</td>
-            <td>{{ stock.order_required }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<ul>
+    {% for stock in stocks %}
+    <li>{{ stock.name }}: {{ stock.quantity }}</li>
+    {% endfor %}
+</ul>
 {% endblock %}

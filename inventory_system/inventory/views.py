@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import WeeklyStock, DailyStock, StockItem, StockRecord
-from .forms import WeeklyStockForm, DailyStockForm, StockRecordForm
 from django.db import transaction
+from .forms import WeeklyStockForm, DailyStockForm, StockRecordForm
 
-# Utility function to handle stock forms (both weekly and daily)
+
 def handle_stock_form(request, stock_form_class, template_name, redirect_name):
     stock_items = StockItem.objects.all()
     if request.method == 'POST':
@@ -14,15 +14,18 @@ def handle_stock_form(request, stock_form_class, template_name, redirect_name):
 
                 stock_records = []
                 for item in stock_items:
-                    stock_record_form = StockRecordForm({
-                        'new_delivery': request.POST.get(f'new_delivery_{item.id}', 0),
-                        'closing_stock': request.POST.get(f'closing_stock_{item.id}', 0),
-                        'order_required': request.POST.get(f'order_required_{item.id}', False),
-                    })
-                    if stock_record_form.is_valid():
-                        stock_record = stock_record_form.save(commit=False)
-                        stock_record.stock = stock_instance
-                        stock_record.item = item
+                    new_delivery = request.POST.get(f'new_delivery_{item.id}', 0)
+                    closing_stock = request.POST.get(f'closing_stock_{item.id}', 0)
+                    order_required = request.POST.get(f'order_required_{item.id}', 'off') == 'on'
+
+                    if int(new_delivery) > 0 or int(closing_stock) > 0:
+                        stock_record = StockRecord(
+                            stock=stock_instance,
+                            item=item,
+                            new_delivery=int(new_delivery),
+                            closing_stock=int(closing_stock),
+                            order_required=order_required
+                        )
                         stock_records.append(stock_record)
 
                 StockRecord.objects.bulk_create(stock_records)
@@ -58,9 +61,12 @@ def weekly_stock_list(request):
     stocks = WeeklyStock.objects.all()
     return render(request, 'inventory/weekly_stock_list.html', {'stocks': stocks})
 
-from django.shortcuts import render
-from .models import WeeklyStock
-
+# View to generate weekly stock report
 def weekly_stock_report(request):
     stocks = WeeklyStock.objects.all()
     return render(request, 'inventory/weekly_stock_report.html', {'stocks': stocks})
+
+# View to generate daily stock report (assuming you have this)
+def daily_stock_report(request):
+    stocks = DailyStock.objects.all()
+    return render(request, 'inventory/daily_stock_report.html', {'stocks': stocks})
