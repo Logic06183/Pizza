@@ -3,25 +3,74 @@
 {% block content %}
 <h2>Weekly Stock Report</h2>
 
-<!-- Include the report table structure -->
-{% include 'inventory/report_table.html' %}
+<form method="POST">
+    {% csrf_token %}
+    
+    <!-- Start the table structure -->
+    <table>
+        <thead>
+            {% block table_headers %}
+            <tr>
+                <th>Item Name</th>
+                <th>New Delivery</th>
+                <th>Closing Stock</th>
+                <th>Order Required</th>
+                <th>Actions</th>  <!-- Add Actions column for removing rows if needed -->
+            </tr>
+            {% endblock %}
+        </thead>
+        <tbody>
+            {% block table_rows %}
+            {% for stock_item in stock_items %}
+            <tr>
+                <td>{{ stock_item.name }}</td>
+                <td>
+                    <input type="number" name="new_delivery_{{ stock_item.id }}" value="0" min="0" />
+                </td>
+                <td>
+                    <input type="number" name="closing_stock_{{ stock_item.id }}" value="0" min="0" />
+                </td>
+                <td>
+                    <input type="checkbox" name="order_required_{{ stock_item.id }}" />
+                </td>
+                <td>
+                    <button type="button" class="remove-row">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endblock %}
+        </tbody>
+    </table>
 
-{% endblock %}
+    <!-- Add submit button -->
+    <button type="submit">Submit</button>
+</form>
 
-{% block table_headers %}
-    <th>Item Name</th>
-    <th>New Delivery</th>
-    <th>Closing Stock</th>
-    <th>Order Required</th>
-{% endblock %}
+<!-- Optional: Button to add a new row for dynamic row addition if needed -->
+<button id="add-row" type="button">Add Row</button>
 
-{% block table_rows %}
-    {% for stock in stocks %}
-    <tr>
-        <td>{{ stock.item.name }}</td>
-        <td>{{ stock.new_delivery }}</td>
-        <td>{{ stock.closing_stock }}</td>
-        <td>{{ stock.order_required|yesno:"Yes,No" }}</td>
-    </tr>
-    {% endfor %}
+<script>
+// Optional JavaScript for dynamic row addition and row removal
+document.getElementById('add-row').addEventListener('click', function() {
+    const tableBody = document.querySelector('table tbody');
+    const newRow = document.createElement('tr');
+    
+    newRow.innerHTML = `
+        <td><input type="text" name="new_item_name" /></td>
+        <td><input type="number" name="new_delivery" value="0" min="0" /></td>
+        <td><input type="number" name="closing_stock" value="0" min="0" /></td>
+        <td><input type="checkbox" name="order_required" /></td>
+        <td><button type="button" class="remove-row">Remove</button></td>
+    `;
+    tableBody.appendChild(newRow);
+});
+
+// Event delegation for removing rows
+document.querySelector('table').addEventListener('click', function(event) {
+    if (event.target.classList.contains('remove-row')) {
+        event.target.closest('tr').remove();
+    }
+});
+</script>
+
 {% endblock %}

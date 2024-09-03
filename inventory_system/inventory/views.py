@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from .models import WeeklyStock, DailyStock, StockItem, StockRecord
 from django.db import transaction
+from .models import WeeklyStock, DailyStock, StockItem, StockRecord
 from .forms import WeeklyStockForm, DailyStockForm, StockRecordForm
 
-
+# Reusable function to handle stock form submissions
 def handle_stock_form(request, stock_form_class, template_name, redirect_name):
     stock_items = StockItem.objects.all()
     if request.method == 'POST':
@@ -51,10 +51,32 @@ def stock_list(request):
     stocks = StockItem.objects.all()
     return render(request, 'inventory/stock_list.html', {'stocks': stocks})
 
-# View to list all daily stocks
+from django.shortcuts import render, redirect
+from django.db import transaction
+from .models import DailyStock, StockItem, StockRecord
+from .forms import DailyStockForm
+
 def daily_stock_list(request):
-    stocks = DailyStock.objects.all()
+    if request.method == 'POST':
+        with transaction.atomic():
+            # Process each stock item update
+            for stock in StockItem.objects.all():
+                new_quantity = request.POST.get(f'quantity_{stock.id}', None)
+                if new_quantity is not None:
+                    stock.quantity = int(new_quantity)
+                    stock.save()
+
+            # Optional: Handle adding new stock items if that functionality is required
+            new_stock_name = request.POST.get('new_stock_name', None)
+            new_stock_quantity = request.POST.get('new_stock_quantity', None)
+            if new_stock_name and new_stock_quantity:
+                StockItem.objects.create(name=new_stock_name, quantity=int(new_stock_quantity))
+
+        return redirect('daily_stock_list')  # Redirect to the same view to show updated data
+
+    stocks = StockItem.objects.all()
     return render(request, 'inventory/daily_stock_list.html', {'stocks': stocks})
+
 
 # View to list all weekly stocks
 def weekly_stock_list(request):
@@ -66,7 +88,6 @@ def weekly_stock_report(request):
     stocks = WeeklyStock.objects.all()
     return render(request, 'inventory/weekly_stock_report.html', {'stocks': stocks})
 
-# View to generate daily stock report (assuming you have this)
+# View to generate daily stock report
 def daily_stock_report(request):
-    stocks = DailyStock.objects.all()
-    return render(request, 'inventory/daily_stock_report.html', {'stocks': stocks})
+    return handle_stock_form(request, DailyStockForm, 'inventory/daily_stock_report.html', 'daily_stock_list')

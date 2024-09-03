@@ -2,9 +2,37 @@
 
 {% block content %}
 <h2>Daily Stock List</h2>
-<ul>
-    {% for stock in stocks %}
-    <li>{{ stock.name }}: {{ stock.quantity }}</li>
-    {% endfor %}
-</ul>
+
+<form method="POST">
+    {% csrf_token %}
+    <ul>
+        {% for stock in stocks %}
+        <li>
+            {{ stock.name }}:
+            <input type="number" name="quantity_{{ stock.id }}" value="{{ stock.quantity }}" min="0" />
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Submit button -->
+    <button type="submit">Update Stock</button>
+
+    <!-- Optional: Button to add a new stock item -->
+    <button id="add-stock-item" type="button">Add New Stock Item</button>
+
+    <!-- Fields for adding a new stock item -->
+    <div id="new-stock-item-fields" style="display: none;">
+        <input type="text" name="new_stock_name" placeholder="New Stock Item Name" />
+        <input type="number" name="new_stock_quantity" value="0" min="0" />
+    </div>
+</form>
+
+<script>
+// JavaScript to handle adding new stock item fields dynamically
+document.getElementById('add-stock-item').addEventListener('click', function() {
+    const fields = document.getElementById('new-stock-item-fields');
+    fields.style.display = 'block';
+});
+</script>
+
 {% endblock %}

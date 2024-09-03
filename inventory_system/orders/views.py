@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from datetime import timedelta
-from inventory.models import Ingredient, StockItem  # Import Ingredient and StockItem models
-from .models import PizzaOrder, Pizza, PizzaOrderItem, Order, OrderItem
-from .forms import PizzaOrderForm, OrderForm, OrderItemForm
+from .models import PizzaOrder, Pizza, PizzaOrderItem, Ingredient  # Ensure correct imports
+from .forms import PizzaOrderForm
 
 def add_order(request):
     pizzas = Pizza.objects.all()  # Fetch all pizzas to display in the form
@@ -18,7 +17,7 @@ def add_order(request):
                 quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
                 if quantity > 0:
                     PizzaOrderItem.objects.create(order=pizza_order, pizza_type=pizza, quantity=quantity)
-                    
+
             return redirect('order_list')
     else:
         form = PizzaOrderForm()
