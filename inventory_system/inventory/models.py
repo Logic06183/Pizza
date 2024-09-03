@@ -1,5 +1,16 @@
 from django.db import models
 
+# inventory/models.py
+
+from django.db import models
+
+class Ingredient(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class StockItem(models.Model):
     name = models.CharField(max_length=255)
 

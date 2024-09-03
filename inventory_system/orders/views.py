@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
-from django.utils import timezone  # Add this import
-from datetime import timedelta  # Make sure timedelta is imported as well
-from inventory.models import StockItem
-from .models import PizzaOrder, Pizza, PizzaOrderItem
-from .forms import PizzaOrderForm
-
+from django.utils import timezone
+from datetime import timedelta
+from inventory.models import Ingredient, StockItem  # Import Ingredient and StockItem models
+from .models import PizzaOrder, Pizza, PizzaOrderItem, Order, OrderItem
+from .forms import PizzaOrderForm, OrderForm, OrderItemForm
 
 def add_order(request):
     pizzas = Pizza.objects.all()  # Fetch all pizzas to display in the form
