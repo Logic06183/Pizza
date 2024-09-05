@@ -1,46 +1,28 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<h2>Add Weekly Stock</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
 
-    <div id="stock-items">
-        {% for item in stock_items %}
-        <div class="stock-item">
-            <h3>{{ item.name }}</h3>
-            <label for="id_new_delivery_{{ item.id }}">New Delivery:</label>
-            <input type="number" name="new_delivery_{{ item.id }}" id="id_new_delivery_{{ item.id }}">
+    <h3>Stock Items</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>New Delivery</th>
+                <th>Closing Stock</th>
+                <th>Order Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in stock_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td><input type="number" name="new_delivery_{{ item.id }}" min="0"></td>
+                <td><input type="number" name="closing_stock_{{ item.id }}" min="0"></td>
+                <td><input type="checkbox" name="order_required_{{ item.id }}"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-            <label for="id_closing_stock_{{ item.id }}">Closing Stock:</label>
-            <input type="number" name="closing_stock_{{ item.id }}" id="id_closing_stock_{{ item.id }}">
-
-            <label for="id_order_required_{{ item.id }}">Order Required:</label>
-            <input type="checkbox" name="order_required_{{ item.id }}" id="id_order_required_{{ item.id }}">
-        </div>
-        {% endfor %}
-    </div>
-
-    <button type="button" id="add-item-btn">Add Item</button>
-    <button type="submit">Submit</button>
+    <button type="submit">Save</button>
 </form>
-
-<script>
-    document.getElementById('add-item-btn').addEventListener('click', function() {
-        let stockItems = document.getElementById('stock-items');
-        let newItem = stockItems.children[0].cloneNode(true);  // Clone the first item
-
-        // Clear the input fields in the cloned item
-        newItem.querySelectorAll('input').forEach(input => {
-            if (input.type === 'checkbox') {
-                input.checked = false;
-            } else {
-                input.value = '';
-            }
-        });
-
-        stockItems.appendChild(newItem);  // Append the new item to the stock-items div
-    });
-</script>
-{% endblock %}

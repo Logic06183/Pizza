@@ -2,7 +2,6 @@
 
 {% block content %}
 <h2>Weekly Stock List</h2>
-
 <table>
     <thead>
         <tr>
@@ -16,7 +15,7 @@
     <tbody>
         {% for stock in stocks %}
         <tr>
-            <td>{{ stock.date }}</td>
+            <td>{{ stock.stock.date }}</td>
             <td>{{ stock.item.name }}</td>
             <td>{{ stock.new_delivery }}</td>
             <td>{{ stock.closing_stock }}</td>

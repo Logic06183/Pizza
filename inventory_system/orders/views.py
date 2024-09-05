@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import PizzaOrder, Pizza, PizzaOrderItem
 from .forms import PizzaOrderForm
+from inventory.models import Ingredient  # This import should now work correctly
+  # Ensure Ingredient is imported from the correct app
+
 
 def add_order(request):
     pizzas = Pizza.objects.all()  # Ensure all pizzas are fetched
