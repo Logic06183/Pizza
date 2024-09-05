@@ -17,12 +17,15 @@ class StockItem(models.Model):
     def __str__(self):
         return self.name
 
+class DailyStock(models.Model):
+    date = models.DateField(auto_now_add=True)
+    staff_name = models.CharField(max_length=100, default="Unknown")
+
 
 class WeeklyStock(models.Model):
     date = models.DateField(auto_now_add=True)
+    staff_name = models.CharField(max_length=100, default="Unknown")
 
-class DailyStock(models.Model):
-    date = models.DateField(auto_now_add=True)
 
 
 class StockRecord(models.Model):

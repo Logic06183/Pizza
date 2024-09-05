@@ -1,5 +1,28 @@
 from django.db import models
 
+# Predefined list of pizzas
+PIZZA_CHOICES = [
+    ('Margie', 'Margie'),
+    ('Champ', 'Champ'),
+    ('Pig n Paradise', 'Pig n Paradise'),
+    ('Vegan Harvest', 'Vegan Harvest'),
+    ('Mish-Mash', 'Mish-Mash'),
+    ('Mushroom Cloud', 'Mushroom Cloud'),
+    ('Feisty Italian', 'Feisty Italian'),
+    ('Sausage Party', 'Sausage Party'),
+    ('Zesty Zucchini', 'Zesty Zucchini'),
+    ('Spud', 'Spud'),
+    ('Owen', 'Owen'),
+    ('Build Your Own', 'Build Your Own'),
+    ('Lekkerizza Pizza', 'Lekkerizza Pizza'),
+    ('Poppas Pizza', 'Poppas Pizza'),
+    ('Sunshine Margherita', 'Sunshine Margherita'),
+    ('Chick Tick Boom', 'Chick Tick Boom'),
+    ('Ham & Artichoke', 'Ham & Artichoke'),
+    ('Veg Special', 'Veg Special'),
+    ('Janes Dough', 'Janes Dough'),
+]
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     quantity = models.IntegerField(default=0)  # Actual stock quantity
@@ -8,7 +31,7 @@ class Ingredient(models.Model):
         return self.name
 
 class Pizza(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, choices=PIZZA_CHOICES, unique=True)
     ingredients = models.ManyToManyField(Ingredient, through='PizzaIngredient')
 
     def __str__(self):

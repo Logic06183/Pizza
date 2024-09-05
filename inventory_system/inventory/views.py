@@ -88,6 +88,31 @@ def weekly_stock_report(request):
     stocks = WeeklyStock.objects.all()
     return render(request, 'inventory/weekly_stock_report.html', {'stocks': stocks})
 
-# View to generate daily stock report
-def daily_stock_report(request):
-    return handle_stock_form(request, DailyStockForm, 'inventory/daily_stock_report.html', 'daily_stock_list')
+from django.shortcuts import render
+from .models import PizzaOrder, Ingredient  # Ensure Ingredient is imported
+from django.utils import timezone
+
+def daily_report(request):
+    # Calculate the estimated usage of ingredients for the current day
+    orders = PizzaOrder.objects.filter(order_time__date=timezone.now().date())
+    total_usage = {}
+    for order in orders:
+        usage = order.calculate_ingredient_usage()
+        for ingredient, quantity in usage.items():
+            if ingredient not in total_usage:
+                total_usage[ingredient] = 0
+            total_usage[ingredient] += quantity
+
+    # Calculate remaining stock based on current inventory
+    ingredients = Ingredient.objects.all()
+    report = []
+    for ingredient in ingredients:
+        remaining_quantity = ingredient.quantity - total_usage.get(ingredient.name, 0)
+        report.append({
+            'name': ingredient.name,
+            'current_stock': ingredient.quantity,
+            'estimated_usage': total_usage.get(ingredient.name, 0),
+            'estimated_remaining': remaining_quantity,
+        })
+
+    return render(request, 'orders/daily_report.html', {'report': report})
