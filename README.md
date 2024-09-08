@@ -1,31 +1,86 @@
-# Pizza Demand Forecasting
+Sure, I can help you rewrite the `README.md` file for your Django-based inventory and pizza ordering system. Here's an outline based on what the system does:
+
+---
+
+# Pizza Inventory Management and Ordering System
 
 ## Overview
-This repository contains the code and dataset used for forecasting pizza demand using SARIMA (Seasonal AutoRegressive Integrated Moving Average) time series modeling.
 
-## Project Structure
+This project is a Django-based web application designed for managing pizza orders and tracking inventory levels for daily and weekly stock in a pizza shop. It allows users to:
 
-- `Order_System_2.csv`: The dataset containing historical pizza order information.
-- `Pizza_prediction.ipynb`: Jupyter notebook with the SARIMA model development and validation.
-- `pizza_order.gs`: Google Script file associated with the project and the monitoring system.
+- Place orders and track pizza types, quantities, and order statuses.
+- Manage daily and weekly inventory of ingredients and other stock items.
+- Generate and review daily and weekly stock reports.
 
-## Model
-The SARIMA model is used to predict daily pizza demand, considering seasonality, holidays, and other relevant factors. The model helps to estimate the required inventory to meet the upcoming demand.
+## Features
+
+1. **Pizza Order Management:**
+   - Create new pizza orders with customizable pizza types and quantities.
+   - Track order time, preparation time, and high-priority/late orders.
+   - View detailed reports of daily pizza orders.
+
+2. **Inventory Management:**
+   - Manage daily and weekly stock levels, including adding new deliveries and recording closing stock.
+   - Track inventory items such as pizza ingredients and other supplies.
+   - Mark stock items as requiring orders when stock levels are low.
+
+3. **Stock Reports:**
+   - View detailed daily and weekly stock reports.
+   - Easily add or remove stock items through the reports page.
+   - Track new deliveries, closing stock, and order requirements for all items.
+
+## Technologies Used
+
+- **Python (3.12)** with Django (5.0.6)
+- **PostgreSQL** for the database backend
+- **HTML/CSS** for front-end styling
+- **JavaScript** for dynamic form handling (add/remove stock rows)
+  
+## Setup Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-repo/pizza-inventory.git
+   cd pizza-inventory
+   ```
+
+2. **Install dependencies:**
+   Make sure you have Python 3.12+ and Django 5.0.6+ installed.
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Database setup:**
+   Configure your database settings in `settings.py`, then apply migrations:
+   ```bash
+   python manage.py migrate
+   ```
+
+4. **Run the development server:**
+   ```bash
+   python manage.py runserver
+   ```
+   Access the application at `http://127.0.0.1:8001/`.
 
 ## Usage
-To replicate the forecasting process or to run the predictive model on new data:
-1. Ensure you have Python installed with the required libraries (`pandas`, `matplotlib`, `statsmodels`).
-2. Load the `Pizza_prediction.ipynb` notebook in a Jupyter environment.
-3. Run the cells sequentially to perform the time series analysis and to generate forecasts.
 
-## Results
-The model's performance is evaluated using the Root Mean Squared Error (RMSE) metric, indicating the average deviation of the predicted values from the actual values. The lower the RMSE, the better the model's forecasts.
+1. **Order Management:**
+   - Go to the Orders section to create new pizza orders.
+   - Track ongoing orders and view detailed reports of pizza consumption.
 
-## Contributing
-Contributions to this project are welcome. Please fork the repository and submit a pull request with your proposed changes.
+2. **Inventory Management:**
+   - Visit the Daily Stocks or Weekly Stocks page to manage stock items.
+   - Add new stock deliveries or adjust closing stock levels.
+   - Use the Daily or Weekly Reports pages to review and update inventory.
+
+## Contribution
+
+Contributions are welcome! Please submit pull requests or report issues for improvements.
 
 ## License
-This project is open-source and available under the [MIT License](LICENSE).
 
-## Contact
-If you have any questions or comments about this project, please open an issue in this repository.
+This project is licensed under the MIT License.
+
+---
+
+Let me know if you'd like any additional details or sections added!
