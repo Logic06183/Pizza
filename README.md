@@ -1,6 +1,4 @@
-Sure, I can help you rewrite the `README.md` file for your Django-based inventory and pizza ordering system. Here's an outline based on what the system does:
 
----
 
 # Pizza Inventory Management and Ordering System
 
