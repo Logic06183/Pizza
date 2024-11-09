@@ -1,8 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}John Dough's, Linden{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/scripts.js' %}" defer></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,117 +26,53 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            position: absolute;
-            bottom: 0;
         }
-        .header .logo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 150px;
-            height: auto;
-        }
-        .header-text {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-        .nav-bar {
+        .navbar {
+            display: flex;
+            justify-content: center;
             background-color: #333;
-            overflow: hidden;
+            padding: 10px 0;
         }
-        .nav-bar a {
-            float: left;
-            display: block;
+        .navbar a {
             color: #FFD700;
-            text-align: center;
             padding: 14px 20px;
             text-decoration: none;
+            text-align: center;
         }
-        .nav-bar a:hover {
-            background-color: #FFD700;
-            color: #000;
+        .navbar a:hover {
+            background-color: #575757;
         }
         .content {
             padding: 20px;
+        }
+        .footer {
             text-align: center;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #000;
-            background-color: #FFD700;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        .btn:hover {
-            background-color: #FFA500;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #FFD700;
-        }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        table {
-            margin: 0 auto;
-            width: 80%;
-            border-collapse: collapse;
-            color: #FFD700;
-        }
-        th, td {
             padding: 10px;
-            border: 1px solid #FFD700;
-            text-align: center;
-        }
-        th {
-            background-color: #444;
-        }
-        .high-priority {
-            background-color: #FFD700;
-            color: #000;
-        }
-        .late {
-            background-color: #FF4500;
-            color: white;
+            background-color: #333;
+            color: #FFD700;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="{% static 'header_image.jpeg' %}" alt="John Dough's, Linden">
-        <img class="logo" src="{% static 'logo.png' %}" alt="Logo">
-        <div class="header-text">
-            John Dough's, Linden
-        </div>
+        <img src="{% static 'images/header.jpg' %}" alt="Header Image">
+        <h1>John Dough's, Linden</h1>
     </div>
-    <div class="nav-bar">
-        <a href="{% url 'order_list' %}">Orders</a>
-        <a href="{% url 'daily_stock_list' %}">Daily Stocks</a>
-        <a href="{% url 'weekly_stock_list' %}">Weekly Stocks</a>
-        <a href="{% url 'daily_report' %}">Daily Report</a>
-        <a href="{% url 'weekly_stock_report' %}">Weekly Report</a>
+    <div class="navbar">
+        <a href="#">Home</a>
+        <a href="#">Menu</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
     </div>
     <div class="content">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div class="footer">
+        <p>&copy; 2023 John Dough's, Linden. All rights reserved.</p>
     </div>
 </body>
 </html>
