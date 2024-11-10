@@ -101,3 +101,30 @@ class PizzaOrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.pizza_type.name} for order {self.order_id}"
+
+# orders/models.py
+from django.db import models
+from django.utils import timezone
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('cooking', 'Cooking'),
+        ('ready', 'Ready'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    platform = models.CharField(max_length=50)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    order_time = models.DateTimeField(default=timezone.now)
+    due_time = models.DateTimeField()
+    preparation_time = models.IntegerField(help_text="Time in minutes")
+    extra_toppings = models.TextField(blank=True)
+    is_high_priority = models.BooleanField(default=False)
+
+    def is_late(self):
+        return timezone.now() > self.due_time
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.platform} ({self.status})"

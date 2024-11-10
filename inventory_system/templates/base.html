@@ -57,11 +57,12 @@
     <!-- Header Section -->
     <header>
         <h1>Order Management Dashboard</h1>
+        <img src="{% static 'images/logo.png' %}" alt="Logo"> <!-- Example image reference -->
     </header>
 
     <!-- Navigation Bar -->
     <nav>
-        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'order_list' %}">Home</a>
         <a href="{% url 'order_list' %}">Order List</a>
         <a href="{% url 'add_order' %}">Add New Order</a>
         <a href="{% url 'daily_report' %}">Daily Report</a>

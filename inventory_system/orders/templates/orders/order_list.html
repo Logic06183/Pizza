@@ -1,34 +1,127 @@
 {% extends "base.html" %}
 
-{% block title %}Order List{% endblock %}
+{% block title %}Pizza Orders Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 60% 40%;
+        gap: 20px;
+        padding: 20px;
+    }
+    .order-section {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .active-orders { background: #fff3e0; }
+    .completed-orders { background: #e8f5e9; }
+    .order-card {
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    .high-priority { border-left: 4px solid #f44336; }
+    .almost-due { border-left: 4px solid #ff9800; }
+    .on-time { border-left: 4px solid #4caf50; }
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-    <h1>Order List</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Platform</th>
-                <th>Pizza Types</th>
-                <th>Quantities</th>
-                <th>Extra Toppings</th>
-                <th>Preparation Time</th>
-                <th>Order Time</th>
-                <th>Due Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order, due_time, pizza_types, quantities in orders %}
-                <tr class="{% if order.is_late %}late{% elif order.is_high_priority %}high-priority{% endif %}">
-                    <td>{{ order.platform }}</td>
-                    <td>{{ pizza_types|join:", " }}</td>
-                    <td>{{ quantities|join:", " }}</td>
-                    <td>{{ order.extra_toppings }}</td>
-                    <td>{{ order.preparation_time }} min</td>
-                    <td>{{ order.order_time|time:"P" }}</td>
-                    <td>{{ due_time|time:"P" }}</td>
-                </tr>
+<div class="dashboard-container">
+    <div class="order-section active-orders">
+        <h2>Active Orders</h2>
+        <div id="active-orders-container">
+            {% for order in active_orders %}
+            <div class="order-card {% if order.is_high_priority %}high-priority{% elif order.is_almost_due %}almost-due{% else %}on-time{% endif %}"
+                 data-order-id="{{ order.id }}">
+                <div class="order-header">
+                    <span class="status-badge">{{ order.status }}</span>
+                    <span class="order-time">Due: {{ order.due_time|time:"P" }}</span>
+                </div>
+                <h3>Order #{{ order.id }} - {{ order.platform }}</h3>
+                <div class="order-details">
+                    <p>Pizzas: {{ order.pizza_types|join:", " }} ({{ order.quantities|join:", " }})</p>
+                    <p>Extra Toppings: {{ order.extra_toppings }}</p>
+                    <p>Prep Time: {{ order.preparation_time }} min</p>
+                </div>
+                <div class="order-actions">
+                    <button onclick="updateOrderStatus('{{ order.id }}', 'cooking')">Start Cooking</button>
+                    <button onclick="updateOrderStatus('{{ order.id }}', 'ready')">Mark Ready</button>
+                    <button onclick="updateOrderStatus('{{ order.id }}', 'completed')">Complete</button>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'add_order' %}">Add New Order</a>
+        </div>
+    </div>
+
+    <div class="order-section completed-orders">
+        <h2>Completed Orders</h2>
+        <div id="completed-orders-container">
+            {% for order in completed_orders %}
+            <div class="order-card" data-order-id="{{ order.id }}">
+                <h3>Order #{{ order.id }}</h3>
+                <p>Completed at: {{ order.completed_time|time:"P" }}</p>
+                <div class="order-details">
+                    <p>{{ order.pizza_types|join:", " }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function updateOrderStatus(orderId, status) {
+    fetch(`/orders/update-status/${orderId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ status: status })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.success) {
+            refreshOrders();
+        }
+    });
+}
+
+function refreshOrders() {
+    fetch('/orders/get-orders/')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('active-orders-container').innerHTML = data.active_orders_html;
+            document.getElementById('completed-orders-container').innerHTML = data.completed_orders_html;
+        });
+}
+
+// Refresh orders every 30 seconds
+setInterval(refreshOrders, 30000);
+
+function getCookie(name) {
+    // Standard Django CSRF token getter
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}

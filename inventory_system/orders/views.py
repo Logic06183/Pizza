@@ -2,8 +2,12 @@ from django.shortcuts import render, redirect
 from .models import PizzaOrder, Pizza, PizzaOrderItem
 from .forms import PizzaOrderForm
 from inventory.models import Ingredient  # This import should now work correctly
-  # Ensure Ingredient is imported from the correct app
-
+from django.utils import timezone
+from datetime import timedelta
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 def add_order(request):
     pizzas = Pizza.objects.all()  # Ensure all pizzas are fetched
@@ -27,8 +31,43 @@ def add_order(request):
 
 
 def order_list(request):
-    orders = PizzaOrder.objects.all()
-    return render(request, 'orders/order_list.html', {'orders': orders})
+    active_orders = Order.objects.filter(status__in=['new', 'cooking', 'ready']).order_by('due_time')
+    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')[:10]
+    
+    return render(request, 'orders/order_list.html', {
+        'active_orders': active_orders,
+        'completed_orders': completed_orders,
+    })
+
+@csrf_exempt
+def update_order_status(request, order_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        status = data.get('status')
+        
+        try:
+            order = Order.objects.get(id=order_id)
+            order.status = status
+            if status == 'completed':
+                order.completed_time = timezone.now()
+            order.save()
+            return JsonResponse({'success': True})
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Order not found'})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def get_orders(request):
+    active_orders = Order.objects.filter(status__in=['new', 'cooking', 'ready']).order_by('due_time')
+    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')[:10]
+    
+    active_orders_html = render_to_string('orders/partials/active_orders.html', {'active_orders': active_orders})
+    completed_orders_html = render_to_string('orders/partials/completed_orders.html', {'completed_orders': completed_orders})
+    
+    return JsonResponse({
+        'active_orders_html': active_orders_html,
+        'completed_orders_html': completed_orders_html
+    })
 
 def daily_report(request):
     # Calculate the estimated usage of ingredients for the current day
@@ -55,22 +94,21 @@ def daily_report(request):
 
     return render(request, 'orders/daily_report.html', {'report': report})
 
-from django.utils import timezone
-from datetime import timedelta
+# orders/views.py
+from django.shortcuts import render
+from .models import Order  # Add this import
 
 def order_list(request):
-    today = timezone.now().date()
-    orders = PizzaOrder.objects.filter(order_time__date=today, display=True)
-    current_time = timezone.now()
-
-    order_list = []
-    for order in orders:
-        due_time = order.order_time + timedelta(minutes=order.preparation_time)
-        order.is_late = current_time > due_time
-        order.is_high_priority = current_time + timedelta(minutes=5) > due_time and not order.is_late
-        pizza_types = [item.pizza_type.name for item in order.pizzaorderitem_set.all()]
-        quantities = [item.quantity for item in order.pizzaorderitem_set.all()]
-        order_list.append((order, due_time, pizza_types, quantities))  # List of tuples with 4 elements
-
-    order_list.sort(key=lambda x: x[1])  # Sort by due_time
-    return render(request, 'orders/order_list.html', {'orders': order_list})
+    active_orders = Order.objects.filter(
+        status__in=['new', 'cooking', 'ready']
+    ).order_by('due_time')
+    
+    completed_orders = Order.objects.filter(
+        status='delivered'
+    ).order_by('-due_time')
+    
+    context = {
+        'active_orders': active_orders,
+        'completed_orders': completed_orders
+    }
+    return render(request, 'orders/order_list.html', context)
