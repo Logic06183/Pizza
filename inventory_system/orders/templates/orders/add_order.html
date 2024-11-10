@@ -1,35 +1,46 @@
 {% extends "base.html" %}
+{% load custom_filters %}  <!-- Load the custom filter here -->
 
 {% block title %}Add Pizza Order{% endblock %}
 
 {% block content %}
-    <h1>Add Pizza Order</h1>
-    <form method="post">
+    <h1 style="text-align:center; color:#FFD700;">Add Pizza Order</h1>
+    <form method="post" style="max-width: 600px; margin: auto; padding: 20px; background-color: #333; border-radius: 10px;">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="platform">Platform:</label>
-            {{ form.platform }}
+
+        <!-- Platform Selection -->
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="platform" style="color: #FFD700;">Platform:</label>
+            {{ form.platform|add_class:"form-control" }}
         </div>
 
-        <h3>Select Pizza Types and Quantities:</h3>
+        <!-- Pizza Types and Quantities -->
+        <h3 style="color: #FFD700; margin-top: 20px;">Select Pizza Types and Quantities:</h3>
         {% for pizza in pizzas %}
-            <div class="form-group">
-                <label for="pizza_{{ pizza.id }}">{{ pizza.name }}</label>
-                <input type="number" name="quantity_{{ pizza.id }}" min="0" id="pizza_{{ pizza.id }}" value="0" />
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label for="pizza_{{ pizza.id }}" style="color: #FFD700;">{{ pizza.name }}:</label>
+                <input type="number" name="quantity_{{ pizza.id }}" min="0" id="pizza_{{ pizza.id }}" value="0" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px;" />
             </div>
         {% endfor %}
 
-        <div class="form-group">
-            <label for="extra_toppings">Extra Toppings:</label>
-            {{ form.extra_toppings }}
+        <!-- Extra Toppings -->
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="extra_toppings" style="color: #FFD700;">Extra Toppings:</label>
+            {{ form.extra_toppings|add_class:"form-control" }}
         </div>
 
-        <div class="form-group">
-            <label for="preparation_time">Preparation Time (minutes):</label>
-            {{ form.preparation_time }}
+        <!-- Preparation Time -->
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="preparation_time" style="color: #FFD700;">Preparation Time (minutes):</label>
+            {{ form.preparation_time|add_class:"form-control" }}
         </div>
 
-        <button type="submit" class="btn">Add Order</button>
+        <!-- Submit Button -->
+        <button type="submit" class="btn" style="margin-top: 20px; background-color: #FFD700; color: #000; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">Add Order</button>
     </form>
-    <a href="{% url 'order_list' %}">Back to Order List</a>
+
+    <!-- Back Link -->
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="{% url 'order_list' %}" style="color: #FFD700; text-decoration: none;">Back to Order List</a>
+    </div>
 {% endblock %}
