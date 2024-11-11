@@ -50,8 +50,12 @@ def add_order(request):
 
 
 def order_list(request):
-    active_orders = Order.objects.filter(status__in=['pending', 'cooking', 'ready']).order_by('due_time')
-    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')
+    active_orders = Order.objects.filter(
+        status__in=['pending', 'cooking', 'ready']
+    ).order_by('due_time')
+    completed_orders = Order.objects.filter(
+        status='completed'
+    ).order_by('-completed_time')
     return render(request, 'orders/order_list.html', {
         'active_orders': active_orders,
         'completed_orders': completed_orders,
@@ -87,48 +91,19 @@ def get_orders(request):
 
 def daily_report(request):
     today = timezone.now().date()
-    daily_orders = Order.objects.filter(order_time__date=today)
+    daily_orders = Order.objects.filter(
+        order_time__date=today
+    ).prefetch_related('orderitem_set', 'orderitem_set__pizza')
     
-    # Initialize ingredient totals
     ingredient_usage = {}
-    
-    # Calculate ingredient usage from orders
+    # Calculate ingredient usage from OrderItems
     for order in daily_orders:
-        pizza_type = order.pizza_type
-        if pizza_type in PIZZA_INGREDIENTS:
-            for ingredient, amount in PIZZA_INGREDIENTS[pizza_type].items():
-                if ingredient not in ingredient_usage:
-                    ingredient_usage[ingredient] = 0
-                ingredient_usage[ingredient] += amount * order.quantity
+        for item in order.orderitem_set.all():
+            for ingredient in item.pizza.ingredients.all():
+                if ingredient.name not in ingredient_usage:
+                    ingredient_usage[ingredient.name] = 0
+                ingredient_usage[ingredient.name] += item.quantity
 
-    # Get current stock levels (assuming you have a Stock model)
-    stock_items = []
-    for ingredient, used_amount in ingredient_usage.items():
-        current_stock = Stock.objects.get(name=ingredient).quantity
-        stock_items.append({
-            'name': ingredient,
-            'current_stock': current_stock,
-            'estimated_usage': used_amount,
-            'estimated_remaining': current_stock - used_amount
-        })
-
-    return render(request, 'orders/daily_report.html', {'items': stock_items})
-
-# orders/views.py
-from django.shortcuts import render
-from .models import Order  # Add this import
-
-def order_list(request):
-    active_orders = Order.objects.filter(
-        status__in=['new', 'cooking', 'ready']
-    ).order_by('due_time')
-    
-    completed_orders = Order.objects.filter(
-        status='delivered'
-    ).order_by('-due_time')
-    
-    context = {
-        'active_orders': active_orders,
-        'completed_orders': completed_orders
-    }
-    return render(request, 'orders/order_list.html', context)
+    return render(request, 'orders/daily_report.html', {
+        'usage': ingredient_usage
+    })

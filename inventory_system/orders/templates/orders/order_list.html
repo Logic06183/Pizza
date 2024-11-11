@@ -83,6 +83,10 @@ function refreshOrders() {
         return response.json();
     })
     .then(data => {
+        if (data.error) {
+            console.error('Server error:', data.error);
+            return;
+        }
         document.getElementById('active-orders-container').innerHTML = data.active_orders_html;
         document.getElementById('completed-orders-container').innerHTML = data.completed_orders_html;
     })
