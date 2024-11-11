@@ -95,6 +95,11 @@ class PizzaOrderItem(models.Model):
     order = models.ForeignKey(PizzaOrder, on_delete=models.CASCADE)
     pizza_type = models.ForeignKey(Pizza, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+    notes = models.TextField(
+        blank=True,
+        verbose_name="Pizza Specifications",
+        help_text="Detailed notes about this pizza"
+    )
 
     class Meta:
         ordering = ['pizza_type']

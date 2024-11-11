@@ -1,0 +1,21 @@
+
+{% for order in active_orders %}
+<div class="order-card {% if order.is_high_priority %}high-priority{% elif order.is_almost_due %}almost-due{% else %}on-time{% endif %}"
+     data-order-id="{{ order.id }}">
+    <div class="order-header">
+        <span class="status-badge">{{ order.status }}</span>
+        <span class="order-time">Due: {{ order.due_time|time:"P" }}</span>
+    </div>
+    <h3>Order #{{ order.id }} - {{ order.platform }}</h3>
+    <div class="order-details">
+        <p>Pizzas: {{ order.pizza_types|join:", " }} ({{ order.quantities|join:", " }})</p>
+        <p>Extra Toppings: {{ order.extra_toppings }}</p>
+        <p>Prep Time: {{ order.preparation_time }} min</p>
+    </div>
+    <div class="order-actions">
+        <button onclick="updateOrderStatus('{{ order.id }}', 'cooking')">Start Cooking</button>
+        <button onclick="updateOrderStatus('{{ order.id }}', 'ready')">Mark Ready</button>
+        <button onclick="updateOrderStatus('{{ order.id }}', 'completed')">Complete</button>
+    </div>
+</div>
+{% endfor %}

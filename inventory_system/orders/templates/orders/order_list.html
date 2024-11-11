@@ -40,41 +40,14 @@
     <div class="order-section active-orders">
         <h2>Active Orders</h2>
         <div id="active-orders-container">
-            {% for order in active_orders %}
-            <div class="order-card {% if order.is_high_priority %}high-priority{% elif order.is_almost_due %}almost-due{% else %}on-time{% endif %}"
-                 data-order-id="{{ order.id }}">
-                <div class="order-header">
-                    <span class="status-badge">{{ order.status }}</span>
-                    <span class="order-time">Due: {{ order.due_time|time:"P" }}</span>
-                </div>
-                <h3>Order #{{ order.id }} - {{ order.platform }}</h3>
-                <div class="order-details">
-                    <p>Pizzas: {{ order.pizza_types|join:", " }} ({{ order.quantities|join:", " }})</p>
-                    <p>Extra Toppings: {{ order.extra_toppings }}</p>
-                    <p>Prep Time: {{ order.preparation_time }} min</p>
-                </div>
-                <div class="order-actions">
-                    <button onclick="updateOrderStatus('{{ order.id }}', 'cooking')">Start Cooking</button>
-                    <button onclick="updateOrderStatus('{{ order.id }}', 'ready')">Mark Ready</button>
-                    <button onclick="updateOrderStatus('{{ order.id }}', 'completed')">Complete</button>
-                </div>
-            </div>
-            {% endfor %}
+            {% include 'orders/active_orders.html' %}
         </div>
     </div>
 
     <div class="order-section completed-orders">
         <h2>Completed Orders</h2>
         <div id="completed-orders-container">
-            {% for order in completed_orders %}
-            <div class="order-card" data-order-id="{{ order.id }}">
-                <h3>Order #{{ order.id }}</h3>
-                <p>Completed at: {{ order.completed_time|time:"P" }}</p>
-                <div class="order-details">
-                    <p>{{ order.pizza_types|join:", " }}</p>
-                </div>
-            </div>
-            {% endfor %}
+            {% include 'orders/completed_orders.html' %}
         </div>
     </div>
 </div>
@@ -97,13 +70,29 @@ function updateOrderStatus(orderId, status) {
 }
 
 function refreshOrders() {
-    fetch('/orders/get-orders/')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('active-orders-container').innerHTML = data.active_orders_html;
-            document.getElementById('completed-orders-container').innerHTML = data.completed_orders_html;
-        });
+    fetch('/orders/get-orders/', {
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        credentials: 'same-origin'  // Add this to ensure cookies are sent
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('active-orders-container').innerHTML = data.active_orders_html;
+        document.getElementById('completed-orders-container').innerHTML = data.completed_orders_html;
+    })
+    .catch(error => {
+        console.error('Error refreshing orders:', error);
+    });
 }
+
+// Refresh immediately when the page loads
+document.addEventListener('DOMContentLoaded', refreshOrders);
 
 // Refresh orders every 30 seconds
 setInterval(refreshOrders, 30000);
@@ -124,4 +113,4 @@ function getCookie(name) {
     return cookieValue;
 }
 </script>
-{% endblock %}
+{% endblock %} 

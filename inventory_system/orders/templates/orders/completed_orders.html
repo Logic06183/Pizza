@@ -1,0 +1,10 @@
+
+{% for order in completed_orders %}
+<div class="order-card" data-order-id="{{ order.id }}">
+    <h3>Order #{{ order.id }}</h3>
+    <p>Completed at: {{ order.completed_time|time:"P" }}</p>
+    <div class="order-details">
+        <p>{{ order.pizza_types|join:", " }}</p>
+    </div>
+</div>
+{% endfor %}

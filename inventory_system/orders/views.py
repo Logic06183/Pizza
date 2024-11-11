@@ -31,9 +31,8 @@ def add_order(request):
 
 
 def order_list(request):
-    active_orders = Order.objects.filter(status__in=['new', 'cooking', 'ready']).order_by('due_time')
-    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')[:10]
-    
+    active_orders = Order.objects.filter(status__in=['pending', 'cooking', 'ready']).order_by('due_time')
+    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')
     return render(request, 'orders/order_list.html', {
         'active_orders': active_orders,
         'completed_orders': completed_orders,
@@ -58,41 +57,43 @@ def update_order_status(request, order_id):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 def get_orders(request):
-    active_orders = Order.objects.filter(status__in=['new', 'cooking', 'ready']).order_by('due_time')
-    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')[:10]
-    
-    active_orders_html = render_to_string('orders/partials/active_orders.html', {'active_orders': active_orders})
-    completed_orders_html = render_to_string('orders/partials/completed_orders.html', {'completed_orders': completed_orders})
-    
+    active_orders = Order.objects.filter(status__in=['pending', 'cooking', 'ready']).order_by('due_time')
+    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')
+    active_orders_html = render_to_string('orders/active_orders.html', {'active_orders': active_orders})
+    completed_orders_html = render_to_string('orders/completed_orders.html', {'completed_orders': completed_orders})
     return JsonResponse({
         'active_orders_html': active_orders_html,
-        'completed_orders_html': completed_orders_html
+        'completed_orders_html': completed_orders_html,
     })
 
 def daily_report(request):
-    # Calculate the estimated usage of ingredients for the current day
-    orders = PizzaOrder.objects.filter(order_time__date=timezone.now().date())
-    total_usage = {}
-    for order in orders:
-        usage = order.calculate_ingredient_usage()
-        for ingredient, quantity in usage.items():
-            if ingredient not in total_usage:
-                total_usage[ingredient] = 0
-            total_usage[ingredient] += quantity
+    today = timezone.now().date()
+    daily_orders = Order.objects.filter(order_time__date=today)
+    
+    # Initialize ingredient totals
+    ingredient_usage = {}
+    
+    # Calculate ingredient usage from orders
+    for order in daily_orders:
+        pizza_type = order.pizza_type
+        if pizza_type in PIZZA_INGREDIENTS:
+            for ingredient, amount in PIZZA_INGREDIENTS[pizza_type].items():
+                if ingredient not in ingredient_usage:
+                    ingredient_usage[ingredient] = 0
+                ingredient_usage[ingredient] += amount * order.quantity
 
-    # Calculate remaining stock based on current inventory
-    ingredients = Ingredient.objects.all()
-    report = []
-    for ingredient in ingredients:
-        remaining_quantity = ingredient.quantity - total_usage.get(ingredient.name, 0)
-        report.append({
-            'name': ingredient.name,
-            'current_stock': ingredient.quantity,
-            'estimated_usage': total_usage.get(ingredient.name, 0),
-            'estimated_remaining': remaining_quantity,
+    # Get current stock levels (assuming you have a Stock model)
+    stock_items = []
+    for ingredient, used_amount in ingredient_usage.items():
+        current_stock = Stock.objects.get(name=ingredient).quantity
+        stock_items.append({
+            'name': ingredient,
+            'current_stock': current_stock,
+            'estimated_usage': used_amount,
+            'estimated_remaining': current_stock - used_amount
         })
 
-    return render(request, 'orders/daily_report.html', {'report': report})
+    return render(request, 'orders/daily_report.html', {'items': stock_items})
 
 # orders/views.py
 from django.shortcuts import render

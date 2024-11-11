@@ -17,9 +17,15 @@
         <!-- Pizza Types and Quantities -->
         <h3 style="color: #FFD700; margin-top: 20px;">Select Pizza Types and Quantities:</h3>
         {% for pizza in pizzas %}
-            <div class="form-group" style="margin-bottom: 10px;">
-                <label for="pizza_{{ pizza.id }}" style="color: #FFD700;">{{ pizza.name }}:</label>
-                <input type="number" name="quantity_{{ pizza.id }}" min="0" id="pizza_{{ pizza.id }}" value="0" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px;" />
+            <div class="pizza-box" style="margin-bottom: 20px; padding: 10px; border: 1px solid #FFD700; border-radius: 5px;">
+                <div class="form-group">
+                    <label for="pizza_{{ pizza.id }}" style="color: #FFD700;">{{ pizza.name }}:</label>
+                    <input type="number" name="quantity_{{ pizza.id }}" min="0" id="pizza_{{ pizza.id }}" value="0" class="form-control" style="width: 80px; display: inline-block; margin-left: 10px;" />
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="notes_{{ pizza.id }}" style="color: #FFD700;">Notes:</label>
+                    <textarea name="notes_{{ pizza.id }}" id="notes_{{ pizza.id }}" class="form-control" rows="2" style="width: 100%;"></textarea>
+                </div>
             </div>
         {% endfor %}
 
