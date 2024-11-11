@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import PizzaOrder, Pizza, PizzaOrderItem
-from .forms import PizzaOrderForm
+from .models import Order, Pizza, OrderItem  # Updated imports
+from .forms import OrderForm  # Remove PizzaOrderForm
 from inventory.models import Ingredient  # This import should now work correctly
 from django.utils import timezone
 from datetime import timedelta
@@ -8,24 +8,43 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.contrib import messages
 
 def add_order(request):
-    pizzas = Pizza.objects.all()  # Ensure all pizzas are fetched
+    pizzas = Pizza.objects.all()
     if request.method == 'POST':
-        form = PizzaOrderForm(request.POST)
+        form = OrderForm(request.POST)
         if form.is_valid():
-            pizza_order = form.save(commit=False)
-            pizza_order.save()
+            try:
+                # Create order
+                order = form.save(commit=False)
+                order.save()
 
-            # Save the pizza quantities
-            for pizza in pizzas:
-                quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
-                if quantity > 0:
-                    PizzaOrderItem.objects.create(order=pizza_order, pizza_type=pizza, quantity=quantity)
+                # Process pizza quantities
+                has_pizzas = False
+                for pizza in pizzas:
+                    quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
+                    if quantity > 0:
+                        OrderItem.objects.create(
+                            order=order,
+                            pizza=pizza,
+                            quantity=quantity
+                        )
+                        has_pizzas = True
 
-            return redirect('order_list')
+                if not has_pizzas:
+                    order.delete()
+                    messages.error(request, 'Please add at least one pizza to the order.')
+                    return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
+
+                messages.success(request, 'Order created successfully!')
+                return redirect('order_list')
+
+            except Exception as e:
+                messages.error(request, f'Error creating order: {str(e)}')
+                return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
     else:
-        form = PizzaOrderForm()
+        form = OrderForm()
 
     return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
 
