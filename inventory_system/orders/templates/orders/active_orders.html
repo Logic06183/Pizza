@@ -1,21 +1,19 @@
-
 {% for order in active_orders %}
-<div class="order-card {% if order.is_high_priority %}high-priority{% elif order.is_almost_due %}almost-due{% else %}on-time{% endif %}"
-     data-order-id="{{ order.id }}">
-    <div class="order-header">
-        <span class="status-badge">{{ order.status }}</span>
-        <span class="order-time">Due: {{ order.due_time|time:"P" }}</span>
-    </div>
-    <h3>Order #{{ order.id }} - {{ order.platform }}</h3>
-    <div class="order-details">
-        <p>Pizzas: {{ order.pizza_types|join:", " }} ({{ order.quantities|join:", " }})</p>
-        <p>Extra Toppings: {{ order.extra_toppings }}</p>
-        <p>Prep Time: {{ order.preparation_time }} min</p>
-    </div>
-    <div class="order-actions">
-        <button onclick="updateOrderStatus('{{ order.id }}', 'cooking')">Start Cooking</button>
-        <button onclick="updateOrderStatus('{{ order.id }}', 'ready')">Mark Ready</button>
+<tr data-order-id="{{ order.id }}" data-due-time="{{ order.due_time|date:'c' }}" class="{% if order.is_high_priority %}status-urgent{% elif order.is_almost_due %}status-warning{% else %}status-normal{% endif %}">
+    <td>#{{ order.id }}</td>
+    <td>{{ order.platform }}</td>
+    <td>
+        {% for item in order.orderitem_set.all %}
+            {{ item.pizza.name }} ({{ item.quantity }}){% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </td>
+    <td>{{ order.due_time|time:"P" }}</td>
+    <td class="time-left">calculating...</td>
+    <td>{{ order.status }}</td>
+    <td>
+        <button onclick="updateOrderStatus('{{ order.id }}', 'cooking')">Cook</button>
+        <button onclick="updateOrderStatus('{{ order.id }}', 'ready')">Ready</button>
         <button onclick="updateOrderStatus('{{ order.id }}', 'completed')">Complete</button>
-    </div>
-</div>
+    </td>
+</tr>
 {% endfor %}

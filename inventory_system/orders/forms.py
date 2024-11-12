@@ -8,10 +8,11 @@ from datetime import timedelta
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['platform', 'extra_toppings', 'preparation_time']
+        fields = ['platform', 'extra_toppings', 'preparation_time', 'notes']
         widgets = {
             'extra_toppings': forms.Textarea(attrs={'rows': 3}),
-            'preparation_time': forms.NumberInput(attrs={'min': 1})
+            'preparation_time': forms.NumberInput(attrs={'min': 1}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):

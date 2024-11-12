@@ -20,15 +20,17 @@ def add_order(request):
                 order = form.save(commit=False)
                 order.save()
 
-                # Process pizza quantities
+                # Process pizza quantities and notes
                 has_pizzas = False
                 for pizza in pizzas:
                     quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
+                    notes = request.POST.get(f'notes_{pizza.id}', '')
                     if quantity > 0:
                         OrderItem.objects.create(
                             order=order,
                             pizza=pizza,
-                            quantity=quantity
+                            quantity=quantity,
+                            notes=notes
                         )
                         has_pizzas = True
 
@@ -50,16 +52,18 @@ def add_order(request):
 
 
 def order_list(request):
-    active_orders = Order.objects.filter(
-        status__in=['pending', 'cooking', 'ready']
-    ).order_by('due_time')
-    completed_orders = Order.objects.filter(
-        status='completed'
-    ).order_by('-completed_time')
-    return render(request, 'orders/order_list.html', {
+    active_orders = Order.objects.filter(status__in=['pending', 'cooking', 'ready'])
+    completed_orders = Order.objects.filter(status='completed')
+
+    # Preload pizza relationships
+    active_orders = active_orders.prefetch_related('pizzas')
+    completed_orders = completed_orders.prefetch_related('pizzas')
+
+    context = {
         'active_orders': active_orders,
         'completed_orders': completed_orders,
-    })
+    }
+    return render(request, 'orders/order_list.html', context)
 
 @csrf_exempt
 def update_order_status(request, order_id):
@@ -80,10 +84,22 @@ def update_order_status(request, order_id):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 def get_orders(request):
-    active_orders = Order.objects.filter(status__in=['pending', 'cooking', 'ready']).order_by('due_time')
-    completed_orders = Order.objects.filter(status='completed').order_by('-completed_time')
-    active_orders_html = render_to_string('orders/active_orders.html', {'active_orders': active_orders})
-    completed_orders_html = render_to_string('orders/completed_orders.html', {'completed_orders': completed_orders})
+    active_orders = Order.objects.filter(
+        status__in=['pending', 'cooking', 'ready']
+    ).prefetch_related('orderitem_set__pizza')
+    
+    completed_orders = Order.objects.filter(
+        status='completed'
+    ).prefetch_related('orderitem_set__pizza')
+    
+    context = {
+        'active_orders': active_orders,
+        'completed_orders': completed_orders,
+    }
+    
+    active_orders_html = render_to_string('orders/active_orders.html', context)
+    completed_orders_html = render_to_string('orders/completed_orders.html', context)
+    
     return JsonResponse({
         'active_orders_html': active_orders_html,
         'completed_orders_html': completed_orders_html,

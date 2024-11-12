@@ -3,10 +3,8 @@ from django.utils import timezone
 
 class Pizza(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, default='')
-    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-    ingredients = models.ManyToManyField('inventory.Ingredient')  # Remove blank=True for now
-
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    
     def __str__(self):
         return self.name
 
@@ -15,25 +13,28 @@ class Order(models.Model):
         ('pending', 'Pending'),
         ('cooking', 'Cooking'),
         ('ready', 'Ready'),
-        ('completed', 'Completed')
+        ('completed', 'Completed'),
+    ]
+    PLATFORM_CHOICES = [
+        ('Uber', 'Uber'),
+        ('Bolt', 'Bolt'),
+        ('Window', 'Window'),
     ]
     
-    platform = models.CharField(max_length=50)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    platform = models.CharField(max_length=10, choices=PLATFORM_CHOICES)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     order_time = models.DateTimeField(default=timezone.now)
-    completed_time = models.DateTimeField(null=True, blank=True)
     due_time = models.DateTimeField(null=True, blank=True)
+    completed_time = models.DateTimeField(null=True, blank=True)
     extra_toppings = models.TextField(blank=True)
     preparation_time = models.IntegerField(default=30)  # in minutes
-
-    def __str__(self):
-        return f"Order #{self.id} - {self.status}"
+    notes = models.TextField(blank=True)  # General order notes
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True)  # Individual pizza notes
 
     def __str__(self):
-        return f"{self.quantity}x {self.pizza.name} for Order #{self.order.id}"
+        return f"{self.quantity}x {self.pizza.name} (Order #{self.order.id})"

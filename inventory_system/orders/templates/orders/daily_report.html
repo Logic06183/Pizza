@@ -7,18 +7,33 @@
         <thead>
             <tr>
                 <th>Ingredient</th>
+                <th>Starting Stock</th>
+                <th>Used in Orders</th>
                 <th>Current Stock</th>
-                <th>Used Today</th>
-                <th>Remaining Stock</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
-            <tr>
+            <tr class="{% if item.needs_reorder %}status-urgent{% elif item.running_low %}status-warning{% else %}status-normal{% endif %}">
                 <td>{{ item.name }}</td>
-                <td>{{ item.current_stock }} units</td>
-                <td>{{ item.estimated_usage }} units</td>
-                <td>{{ item.estimated_remaining }} units</td>
+                <td>{{ item.starting_stock }} {{ item.unit }}</td>
+                <td>
+                    {{ item.used_today }} {{ item.unit }}
+                    {% if item.pizza_usage %}
+                    <small>(Used in: {{ item.pizza_usage|join:", " }})</small>
+                    {% endif %}
+                </td>
+                <td>{{ item.current_stock }} {{ item.unit }}</td>
+                <td>
+                    {% if item.needs_reorder %}
+                    <span class="badge badge-danger">Reorder Required</span>
+                    {% elif item.running_low %}
+                    <span class="badge badge-warning">Running Low</span>
+                    {% else %}
+                    <span class="badge badge-success">Adequate</span>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
