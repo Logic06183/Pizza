@@ -1,19 +1,21 @@
-{% for order in active_orders %}
-<tr data-order-id="{{ order.id }}" data-due-time="{{ order.due_time|date:'c' }}" class="{% if order.is_high_priority %}status-urgent{% elif order.is_almost_due %}status-warning{% else %}status-normal{% endif %}">
-    <td>#{{ order.id }}</td>
-    <td>{{ order.platform }}</td>
-    <td>
-        {% for item in order.orderitem_set.all %}
-            {{ item.pizza.name }} ({{ item.quantity }}){% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    </td>
-    <td>{{ order.due_time|time:"P" }}</td>
-    <td class="time-left">calculating...</td>
-    <td>{{ order.status }}</td>
-    <td>
-        <button onclick="updateOrderStatus('{{ order.id }}', 'cooking')">Cook</button>
-        <button onclick="updateOrderStatus('{{ order.id }}', 'ready')">Ready</button>
-        <button onclick="updateOrderStatus('{{ order.id }}', 'completed')">Complete</button>
-    </td>
-</tr>
-{% endfor %}
+<!-- ...existing code... -->
+<div class="orders-dashboard">
+    <div class="orders-header">
+        <h2>Active Orders</h2>
+        <div class="time-display">Current Time: <span id="current-time"></span></div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover orders-table" id="active-orders-table">
+            <!-- ...existing code... -->
+            <tbody id="active-orders-body">
+                {% for order in active_orders %}
+                <tr data-order-id="{{ order.id }}" data-due-time="{{ order.due_time|date:'c' }}" class="order-row">
+                    <!-- ...existing code... -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- ...existing code... -->

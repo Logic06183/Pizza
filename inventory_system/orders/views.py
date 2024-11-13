@@ -52,12 +52,13 @@ def add_order(request):
 
 
 def order_list(request):
-    active_orders = Order.objects.filter(status__in=['pending', 'cooking', 'ready'])
-    completed_orders = Order.objects.filter(status='completed')
-
-    # Preload pizza relationships
-    active_orders = active_orders.prefetch_related('pizzas')
-    completed_orders = completed_orders.prefetch_related('pizzas')
+    active_orders = Order.objects.filter(
+        status__in=['pending', 'cooking', 'ready']
+    ).prefetch_related('orderitem_set', 'orderitem_set__pizza')
+    
+    completed_orders = Order.objects.filter(
+        status='completed'
+    ).prefetch_related('orderitem_set', 'orderitem_set__pizza')
 
     context = {
         'active_orders': active_orders,
@@ -109,17 +110,36 @@ def daily_report(request):
     today = timezone.now().date()
     daily_orders = Order.objects.filter(
         order_time__date=today
-    ).prefetch_related('orderitem_set', 'orderitem_set__pizza')
+    ).prefetch_related('orderitem_set', 'orderitem_set__pizza', 'orderitem_set__pizza__ingredients')
     
-    ingredient_usage = {}
-    # Calculate ingredient usage from OrderItems
-    for order in daily_orders:
-        for item in order.orderitem_set.all():
-            for ingredient in item.pizza.ingredients.all():
-                if ingredient.name not in ingredient_usage:
-                    ingredient_usage[ingredient.name] = 0
-                ingredient_usage[ingredient.name] += item.quantity
+    # Get all ingredients and initialize their usage
+    ingredients = Ingredient.objects.all()
+    items = []
+    
+    for ingredient in ingredients:
+        used_amount = 0
+        pizza_usage = []
+        
+        # Calculate usage from orders
+        for order in daily_orders:
+            for item in order.orderitem_set.all():
+                if ingredient in item.pizza.ingredients.all():
+                    used_amount += item.quantity
+                    if item.pizza.name not in pizza_usage:
+                        pizza_usage.append(item.pizza.name)
+        
+        current_stock = ingredient.current_stock
+        items.append({
+            'name': ingredient.name,
+            'starting_stock': current_stock + used_amount,
+            'used_today': used_amount,
+            'current_stock': current_stock,
+            'unit': ingredient.unit,
+            'needs_reorder': current_stock <= ingredient.reorder_point,
+            'running_low': current_stock <= ingredient.reorder_point * 2,
+            'pizza_usage': pizza_usage
+        })
 
     return render(request, 'orders/daily_report.html', {
-        'usage': ingredient_usage
+        'items': items
     })

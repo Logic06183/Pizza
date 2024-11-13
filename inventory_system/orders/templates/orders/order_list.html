@@ -5,19 +5,38 @@
 {% block extra_css %}
 <style>
     .dashboard-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
         padding: 20px;
+    }
+    .order-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .orders-table {
         width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-    .orders-table th, .orders-table td {
-        padding: 12px;
-        border: 1px solid #ddd;
+        border-collapse: separate;
+        border-spacing: 0 8px;
     }
     .orders-table th {
-        background-color: #f5f5f5;
+        background-color: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+    }
+    .orders-table td {
+        padding: 12px;
+        background: white;
+    }
+    .action-button {
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: none;
+        color: white;
+        background: #007bff;
+        margin: 0 2px;
     }
     .status-urgent { background-color: #ffebee; }
     .status-warning { background-color: #fff3e0; }
@@ -28,38 +47,42 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <h2>Active Orders</h2>
-    <table class="orders-table" id="active-orders-table">
-        <thead>
-            <tr>
-                <th>Order #</th>
-                <th>Platform</th>
-                <th>Pizzas</th>
-                <th>Due Time</th>
-                <th>Time Left</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="active-orders-container">
-            {% include 'orders/active_orders.html' %}
-        </tbody>
-    </table>
+    <div class="order-section">
+        <h2>Active Orders</h2>
+        <table class="orders-table" id="active-orders-table">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Platform</th>
+                    <th>Pizzas</th>
+                    <th>Due Time</th>
+                    <th>Time Left</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="active-orders-container">
+                {% include 'orders/active_orders.html' %}
+            </tbody>
+        </table>
+    </div>
 
-    <h2>Completed Orders</h2>
-    <table class="orders-table" id="completed-orders-table">
-        <thead>
-            <tr>
-                <th>Order #</th>
-                <th>Platform</th>
-                <th>Pizzas</th>
-                <th>Completion Time</th>
-            </tr>
-        </thead>
-        <tbody id="completed-orders-container">
-            {% include 'orders/completed_orders.html' %}
-        </tbody>
-    </table>
+    <div class="order-section">
+        <h2>Completed Orders</h2>
+        <table class="orders-table" id="completed-orders-table">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Platform</th>
+                    <th>Pizzas</th>
+                    <th>Completion Time</th>
+                </tr>
+            </thead>
+            <tbody id="completed-orders-container">
+                {% include 'orders/completed_orders.html' %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
