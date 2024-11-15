@@ -8,14 +8,12 @@ class PizzaAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'platform', 'status', 'order_time')
-    list_filter = ('status', 'platform')
-    search_fields = ('id',)
+    list_display = ('id', 'customer', 'date_created', 'status')
+    list_filter = ('status', 'date_created')
+    search_fields = ('customer',)
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('order', 'pizza', 'quantity')
     list_filter = ('pizza',)
     search_fields = ('order__id', 'pizza__name')
-
-

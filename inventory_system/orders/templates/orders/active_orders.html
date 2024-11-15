@@ -1,17 +1,49 @@
 <!-- ...existing code... -->
 <div class="orders-dashboard">
     <div class="orders-header">
-        <h2>Active Orders</h2>
+        <h2><i class="fas fa-pizza-slice"></i> Active Orders</h2>
         <div class="time-display">Current Time: <span id="current-time"></span></div>
     </div>
 
     <div class="table-responsive">
         <table class="table table-hover orders-table" id="active-orders-table">
-            <!-- ...existing code... -->
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Items</th>
+                    <th>Due Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
             <tbody id="active-orders-body">
                 {% for order in active_orders %}
                 <tr data-order-id="{{ order.id }}" data-due-time="{{ order.due_time|date:'c' }}" class="order-row">
-                    <!-- ...existing code... -->
+                    <td>#{{ order.id }}</td>
+                    <td>
+                        {% for item in order.orderitem_set.all %}
+                            <div class="order-item">
+                                <span class="item-quantity">{{ item.quantity }}x</span>
+                                <span class="item-name">{{ item.pizza_name }}</span>
+                            </div>
+                        {% endfor %}
+                    </td>
+                    <td>{{ order.due_time|time:"H:i" }}</td>
+                    <td><span class="status-badge status-{{ order.status }}">{{ order.status|title }}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-cooking" onclick="updateStatus({{ order.id }}, 'cooking')">
+                                <i class="fas fa-fire"></i> Cooking
+                            </button>
+                            <button class="btn btn-sm btn-ready" onclick="updateStatus({{ order.id }}, 'ready')">
+                                <i class="fas fa-check"></i> Ready
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No active orders at this time</td>
                 </tr>
                 {% endfor %}
             </tbody>

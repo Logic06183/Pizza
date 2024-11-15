@@ -1,0 +1,38 @@
+[
+    {
+        "model": "orders.topping",
+        "pk": 1,
+        "fields": {
+            "name": "Extra Cheese",
+            "price": "15.00",
+            "available": true
+        }
+    },
+    {
+        "model": "orders.topping",
+        "pk": 2,
+        "fields": {
+            "name": "Pepperoni",
+            "price": "20.00",
+            "available": true
+        }
+    },
+    {
+        "model": "orders.topping",
+        "pk": 3,
+        "fields": {
+            "name": "Mushrooms",
+            "price": "15.00",
+            "available": true
+        }
+    },
+    {
+        "model": "orders.topping",
+        "pk": 4,
+        "fields": {
+            "name": "Bacon",
+            "price": "25.00",
+            "available": true
+        }
+    }
+]

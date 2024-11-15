@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Order, Pizza, OrderItem  # Updated imports
+from .models import Order, Pizza, OrderItem, Topping  # Updated imports
 from .forms import OrderForm  # Remove PizzaOrderForm
 from inventory.models import Ingredient  # This import should now work correctly
 from django.utils import timezone
@@ -9,60 +9,30 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.contrib import messages
+from django import forms
+
+class OrderForm(forms.Form):
+    PLATFORM_CHOICES = [
+        ('web', 'Website'),
+        ('app', 'Mobile App'),
+    ]
+    platform = forms.ChoiceField(choices=PLATFORM_CHOICES)
+    customer = forms.CharField(max_length=100, required=False)
 
 def add_order(request):
-    pizzas = Pizza.objects.all()
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            try:
-                # Create order
-                order = form.save(commit=False)
-                order.save()
-
-                # Process pizza quantities and notes
-                has_pizzas = False
-                for pizza in pizzas:
-                    quantity = int(request.POST.get(f'quantity_{pizza.id}', 0))
-                    notes = request.POST.get(f'notes_{pizza.id}', '')
-                    if quantity > 0:
-                        OrderItem.objects.create(
-                            order=order,
-                            pizza=pizza,
-                            quantity=quantity,
-                            notes=notes
-                        )
-                        has_pizzas = True
-
-                if not has_pizzas:
-                    order.delete()
-                    messages.error(request, 'Please add at least one pizza to the order.')
-                    return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
-
-                messages.success(request, 'Order created successfully!')
-                return redirect('order_list')
-
-            except Exception as e:
-                messages.error(request, f'Error creating order: {str(e)}')
-                return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
-    else:
-        form = OrderForm()
-
-    return render(request, 'orders/add_order.html', {'form': form, 'pizzas': pizzas})
-
+    context = {
+        'pizzas': Pizza.objects.all(),
+        'toppings': Topping.objects.all()
+    }
+    return render(request, 'orders/add_order.html', context)
 
 def order_list(request):
-    active_orders = Order.objects.filter(
-        status__in=['pending', 'cooking', 'ready']
-    ).prefetch_related('orderitem_set', 'orderitem_set__pizza')
+    active_orders = Order.objects.prefetch_related('orderitem_set__pizza').filter(
+        status__in=['pending', 'preparing', 'ready']
+    ).order_by('due_time')
     
-    completed_orders = Order.objects.filter(
-        status='completed'
-    ).prefetch_related('orderitem_set', 'orderitem_set__pizza')
-
     context = {
         'active_orders': active_orders,
-        'completed_orders': completed_orders,
     }
     return render(request, 'orders/order_list.html', context)
 
